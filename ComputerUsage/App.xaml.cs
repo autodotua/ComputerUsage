@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using WpfControls.ButtonBase;
 
 namespace ComputerUsage
 {
@@ -13,9 +14,34 @@ namespace ComputerUsage
     /// </summary>
     public partial class App : Application
     {
-        private void Application_Startup(object sender, StartupEventArgs e)
+        TrayIcon trayIcon;
+        public BackgroundWork background;
+        private  void Application_Startup(object sender, StartupEventArgs e)
         {
             GlobalDatas.LoadSettings();
+            background = new BackgroundWork();
+            //await background.TimerTickEventHandler();
+            void click()
+            {
+                if (Current.MainWindow == null)
+                {
+                    Current.MainWindow = new MainWindow();
+                    Current.MainWindow.Show();
+                }
+            };
+            Dictionary<string, Action> rightMouseClick = new Dictionary<string, Action>
+            {
+                {"退出" ,()=>Shutdown() }
+            };
+            trayIcon = new TrayIcon(ComputerUsage.Properties.Resources.ICON, "计算机使用情况", click, rightMouseClick);
+            trayIcon.Show();
         }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            trayIcon.Dispose();
+        }
+
+
     }
 }

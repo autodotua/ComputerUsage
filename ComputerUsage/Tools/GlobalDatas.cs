@@ -10,28 +10,28 @@ namespace ComputerUsage
     {
         public static XmlHelper xml = new XmlHelper();
 
-        public static int ItemsCountOfEachPage { get; set; }
+        //public static int Set.ItemsCountOfEachPage { get; set; }
 
-        public static TimeSpan TimerInterval { get; set; }
+        //public static int TimerInterval { get; set; }
 
-        public static Properties.Settings Set => Properties.Settings.Default;
-
+        // public static Properties.Settings Set => Properties.Settings.Default;
+        public static Settings Set = new Settings();
         public static void LoadSettings()
         {
-            ItemsCountOfEachPage = Set.ItemCountOfEachPage;
-            TimerInterval = TimeSpan.FromSeconds(Set.Interval);
-            RecordNeeded.Battery = Set.IncludeBattery;
-            RecordNeeded.Windows = Set.IncludeWindows;
-            RecordNeeded.Processes = Set.IncludeProcesses;
+            //Set.ItemsCountOfEachPage = Set.ItemCountOfEachPage;
+            //TimerInterval = Set.Interval;
+            //Set.IncludeBattery = Set.IncludeBattery;
+            //Set.IncludeWindows = Set.IncludeWindows;
+            //Set.IncludeProcesses = Set.IncludeProcesses;
         }
 
         public static void SaveSettings()
         {
-            Set.ItemCountOfEachPage = ItemsCountOfEachPage;
-            Set.Interval =(int) TimerInterval.TotalSeconds;
-            Set.IncludeBattery = RecordNeeded.Battery;
-            Set.IncludeWindows = RecordNeeded.Windows;
-            Set.IncludeProcesses = RecordNeeded.Processes;
+            //Set.ItemCountOfEachPage = Set.ItemsCountOfEachPage;
+            //Set.Interval = TimerInterval;
+            //Set.IncludeBattery = Set.IncludeBattery;
+            //Set.IncludeWindows = Set.IncludeWindows;
+            //Set.IncludeProcesses = Set.IncludeProcesses;
             Set.Save();
         }
     }

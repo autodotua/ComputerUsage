@@ -30,7 +30,6 @@ namespace ComputerUsage
     {
         int currentPageCount;
         bool needReload = true;
-        DispatcherTimer mainTimer = new DispatcherTimer() { Interval = TimerInterval };
 
         ObservableCollection<DataInfo> dataHistoryInfos = new ObservableCollection<DataInfo>();
         ObservableCollection<EventInfo> eventHistoryInfos = new ObservableCollection<EventInfo>();
@@ -41,17 +40,16 @@ namespace ComputerUsage
             InitializeComponent();
             lvwDataHistory.ItemsSource = dataHistoryInfos;
             lvwEventHistory.ItemsSource = eventHistoryInfos;
-            mainTimer.Tick += TimerTickEventHandler;
         }
 
-        private void AddToList(DataInfo info)
+        public void AddToList(DataInfo info)
         {
-            if (currentPageCount > 0 && currentPageCount < ItemsCountOfEachPage)
+            if (currentPageCount > 0 && currentPageCount < Set.ItemsCountOfEachPage)
             {
                 dataHistoryInfos.Add(info);
                 ComboBoxItem comboBoxItem = cbbPageSelection.Items.Cast<ComboBoxItem>().Last();
-                int first = (cbbPageSelection.Items.Count - 1) * ItemsCountOfEachPage + 1;
-                int last = (cbbPageSelection.Items.Count - 1) * ItemsCountOfEachPage + (++currentPageCount) + 1;
+                int first = (cbbPageSelection.Items.Count - 1) * Set.ItemsCountOfEachPage + 1;
+                int last = (cbbPageSelection.Items.Count - 1) * Set.ItemsCountOfEachPage + (++currentPageCount) + 1;
                 comboBoxItem.Content = GetComboBoxItemContent(first, last, comboBoxItem.Tag as string, info.DisplayTime);
                 if (cbbPageSelection.SelectedIndex == cbbPageSelection.Items.Count - 1)
                 {
@@ -62,8 +60,8 @@ namespace ComputerUsage
             {
                 currentPageCount = 0;
                 dataHistoryInfos.Clear();
-                int first = cbbPageSelection.Items.Count * ItemsCountOfEachPage + 1;
-                int last = cbbPageSelection.Items.Count * ItemsCountOfEachPage + 1;
+                int first = cbbPageSelection.Items.Count * Set.ItemsCountOfEachPage + 1;
+                int last = cbbPageSelection.Items.Count * Set.ItemsCountOfEachPage + 1;
                 cbbPageSelection.Items.Add(new ComboBoxItem()
                 {
                     Content = GetComboBoxItemContent(first, last, info.DisplayTime, info.DisplayTime),
@@ -130,17 +128,17 @@ namespace ComputerUsage
         {
             cbbPageSelection.Items.Clear();
             int count = elements.Count;
-            int pageCount = (int)Math.Ceiling(1.0 * count / ItemsCountOfEachPage);
+            int pageCount = (int)Math.Ceiling(1.0 * count / Set.ItemsCountOfEachPage);
 
             for (int page = 0; page < pageCount; page++)
             {
-                int first = page * ItemsCountOfEachPage;
+                int first = page * Set.ItemsCountOfEachPage;
                 string begin = elements[first].GetAttribute("Time");
                 int last;
                 string end;
                 if (page < pageCount - 1)
                 {
-                    last = page * ItemsCountOfEachPage + ItemsCountOfEachPage - 1;
+                    last = page * Set.ItemsCountOfEachPage + Set.ItemsCountOfEachPage - 1;
 
                     end = elements[last].GetAttribute("Time");
                 }
@@ -167,7 +165,7 @@ namespace ComputerUsage
 
                 cbbPageSelection.Items.Add(new ComboBoxItem()
                 {
-                    Content = GetComboBoxItemContent(page * ItemsCountOfEachPage + 1, last + 1, begin, end),
+                    Content = GetComboBoxItemContent(page * Set.ItemsCountOfEachPage + 1, last + 1, begin, end),
                     Tag = begin,
 
                 });
@@ -190,18 +188,18 @@ namespace ComputerUsage
                 return;
             }
             int page = cbbPageSelection.SelectedIndex;
-            int first = page * ItemsCountOfEachPage;
+            int first = page * Set.ItemsCountOfEachPage;
 
             if (cbbType.SelectedIndex == 0)
             {
                 dataHistoryInfos.Clear();
-                int last = (page == cbbPageSelection.Items.Count - 1) ? xml.DataElements.Count - 1 : page * ItemsCountOfEachPage + ItemsCountOfEachPage - 1;
+                int last = (page == cbbPageSelection.Items.Count - 1) ? xml.DataElements.Count - 1 : page * Set.ItemsCountOfEachPage + Set.ItemsCountOfEachPage - 1;
                 SelectDataPage(page, first, last);
             }
             else
             {
                 eventHistoryInfos.Clear();
-                int last = (page == cbbPageSelection.Items.Count - 1) ? xml.EventElements.Count - 1 : page * ItemsCountOfEachPage + ItemsCountOfEachPage - 1;
+                int last = (page == cbbPageSelection.Items.Count - 1) ? xml.EventElements.Count - 1 : page * Set.ItemsCountOfEachPage + Set.ItemsCountOfEachPage - 1;
                 SelectEventPage(page, first, last);
             }
 
@@ -273,19 +271,6 @@ namespace ComputerUsage
         {
             LoadList(xml.DataElements);
             currentPageCount = dataHistoryInfos.Count;
-            mainTimer.Start();
-
-            TimerTickEventHandler(null, null);
-        }
-        private async void TimerTickEventHandler(object sender, EventArgs e)
-        {
-            DataInfo info = null;
-            await Task.Run(() =>
-            {
-                info = new DataInfo();
-                xml.Write(info);
-            });
-            AddToList(info);
         }
 
     }

@@ -13,7 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using static WPfCodes.Basic.Number;
+using static WpfCodes.Basic.Number;
 
 namespace ComputerUsage
 {

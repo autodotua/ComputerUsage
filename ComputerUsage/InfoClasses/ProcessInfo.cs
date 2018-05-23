@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-using static WPfCodes.Basic.Number;
+using static WpfCodes.Basic.Number;
 
 namespace ComputerUsage
 {

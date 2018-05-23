@@ -30,11 +30,11 @@ namespace ComputerUsage
 
         public void Initialize()
         {
-            sldInterval.Value = TimerInterval.TotalSeconds;
-            sldItemsCountOfEachPage.Value = ItemsCountOfEachPage;
-            chkBattery.IsChecked = RecordNeeded.Battery;
-            chkProcesses.IsChecked = RecordNeeded.Processes;
-            chkWindows.IsChecked = RecordNeeded.Windows;
+            sldInterval.Value = Set.TimerInterval;
+            sldItemsCountOfEachPage.Value = Set.ItemsCountOfEachPage;
+            chkBattery.IsChecked = Set.IncludeBattery;
+            chkProcesses.IsChecked = Set.IncludeProcesses;
+            chkWindows.IsChecked = Set.IncludeWindows;
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -46,11 +46,11 @@ namespace ComputerUsage
             }
             else if (btn == btnOk)
             {
-                TimerInterval = TimeSpan.FromSeconds((int)sldInterval.Value);
-                ItemsCountOfEachPage = (int)sldItemsCountOfEachPage.Value;
-                RecordNeeded.Battery = chkBattery.IsChecked.Value;
-                RecordNeeded.Processes = chkProcesses.IsChecked.Value;
-                RecordNeeded.Windows = chkWindows.IsChecked.Value;
+                Set.TimerInterval = (int)sldInterval.Value;
+                Set.ItemsCountOfEachPage = (int)sldItemsCountOfEachPage.Value;
+                Set.IncludeBattery = chkBattery.IsChecked.Value;
+                Set.IncludeProcesses = chkProcesses.IsChecked.Value;
+                Set.IncludeWindows = chkWindows.IsChecked.Value;
                 SaveSettings();
 
                 btn.IsEnabled = false;

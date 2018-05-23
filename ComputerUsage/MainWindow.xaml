@@ -77,9 +77,9 @@
 
 
     </Window.Resources>
-    <TabControl  Margin="4" >
+    <TabControl  Margin="4" x:Name="tab">
         <TabItem Header="历史表格">
-            <local:UcHistoryList/>
+            <local:UcHistoryList x:Name="ucHistoryList"/>
         </TabItem>
         <TabItem x:Name="tabBlock" Header="图表" Selector.Selected="TabItem_Selected">
             <Grid x:Name="grdChart">

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 using static ComputerUsage.ComputerDatas;
+using static ComputerUsage.GlobalDatas;
 
 namespace ComputerUsage
 {
@@ -12,15 +13,15 @@ namespace ComputerUsage
         public DataInfo()
         {
             time = DateTime.Now;
-            if (RecordNeeded.Processes)
+            if (Set.IncludeProcesses)
             {
                 processes = ProcessInfo.GetProcessInfos(GetProcessList()).ToArray();
             }
-            if (RecordNeeded.Windows)
+            if (Set.IncludeWindows)
             {
                 windows = GetAllWindowsInfo();
             }
-            if (RecordNeeded.Battery)
+            if (Set.IncludeBattery)
             {
                 battery = new BatteryInfo(GetBatteryStatus());
             }

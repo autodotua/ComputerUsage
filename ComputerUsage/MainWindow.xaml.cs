@@ -36,7 +36,7 @@ namespace ComputerUsage
 
             InitializeComponent();
             UpdateColor(new SolidColorBrush(Colors.White));
-
+            xml.ReloadFields();
         }
         private void UpdateColor(SolidColorBrush value)
         {
@@ -49,10 +49,16 @@ namespace ComputerUsage
 
         }
 
+        //public void AddToList(DataInfo info)
+        //{
+        //    if (tab.SelectedIndex == 0)
+        //    {
+        //        ucHistoryList.AddToList(info);
+        //    }
+        //}
 
         private void WindowLoadedEventHandler(object sender, RoutedEventArgs e)
         {
-
  
 
         }
