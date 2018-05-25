@@ -36,10 +36,20 @@
         </StackPanel>
         <TextBlock Grid.Row="4">历史纪录表格每页最多显示的项目数量：</TextBlock>
         <flat:HorizontalSlider x:Name="sldItemsCountOfEachPage" Minimum="5" Maximum="200" Grid.Column="2" Grid.Row="4"/>
+
+        <TextBlock Grid.Row="6" VerticalAlignment="Center">开机自启：</TextBlock>
+        <flat:UneditableComboBox x:Name="cbbStartUp" Grid.Row="6" Grid.Column="2">
+            <ComboBoxItem>不开机自启</ComboBoxItem>
+            <ComboBoxItem>开机自启并打开出窗口</ComboBoxItem>
+            <ComboBoxItem>开机自启并隐藏于托盘图标</ComboBoxItem>
+
+        </flat:UneditableComboBox>
+
+
+
         <StackPanel Grid.Column="2" Grid.Row="100" HorizontalAlignment="Right" Orientation="Horizontal">
             <flat:Button x:Name="btnReInitialize" Margin="8,0" Click="Button_Click">恢复</flat:Button>
             <flat:Button x:Name="btnOk" Margin="8,0" Click="Button_Click">保存</flat:Button>
-
         </StackPanel>
     </Grid>
 </UserControl>

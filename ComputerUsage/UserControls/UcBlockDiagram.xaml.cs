@@ -76,17 +76,7 @@ namespace ComputerUsage
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            cvs.Children.Clear();
-
-            DateTime day = (DateTime)(cbbSelectDate.SelectedItem as ComboBoxItem).Tag;
-            List<DateTime> dates = xml.DataElements
-                .Select(p => DateTime.Parse(p.GetAttribute("Time")))
-                .Where(p => p.Date.Equals(day))
-                .ToList();
-            foreach (var time in dates)
-            {
-                DrawPoint(time.Minute, time.Hour);
-            }
+           
 
         }
 
@@ -149,6 +139,28 @@ namespace ComputerUsage
 
         }
 
+        private void cbbSelectDate_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            cvs.Children.Clear();
+
+            DateTime day = (DateTime)(cbbSelectDate.SelectedItem as ComboBoxItem).Tag;
+            List<DateTime> dates = xml.DataElements
+                .Select(p => DateTime.Parse(p.GetAttribute("Time")))
+                .Where(p => p.Date.Equals(day))
+                .ToList();
+            foreach (var time in dates)
+            {
+                DrawPoint(time.Minute, time.Hour);
+            }
+            if(dates.Count<60)
+            {
+                tbkTotalTime.Text = "共 00:" + dates.Count.ToString("00");
+            }
+            else
+            {
+                tbkTotalTime.Text = "共 "+(dates.Count/60).ToString("00")+":" + (dates.Count%60).ToString("00");
+            }
+        }
     }
 
 }

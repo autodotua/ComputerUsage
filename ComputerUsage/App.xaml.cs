@@ -35,6 +35,14 @@ namespace ComputerUsage
             };
             trayIcon = new TrayIcon(ComputerUsage.Properties.Resources.ICON, "计算机使用情况", click, rightMouseClick);
             trayIcon.Show();
+
+
+            if(!(e.Args.Length>0 && e.Args[0] == "noWindow"))
+            {
+                click();
+            }
+
+
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)

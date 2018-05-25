@@ -26,6 +26,21 @@ namespace ComputerUsage
             InitializeComponent();
             sldInterval.TextConvert = p => p.ToString() + "秒";
             sldItemsCountOfEachPage.TextConvert = p => p.ToString() + "条";
+            if(WpfCodes.Program.Startup.WillRunWhenStartup("ComputerUsage"))
+            {
+                if(Set.NoWindowWhenStartup)
+                {
+                    cbbStartUp.SelectedIndex = 2;
+                }
+                else
+                {
+  cbbStartUp.SelectedIndex = 1;
+                }
+            }
+            else
+            {
+                cbbStartUp.SelectedIndex = 0;
+            }
         }
 
         public void Initialize()
@@ -51,6 +66,24 @@ namespace ComputerUsage
                 Set.IncludeBattery = chkBattery.IsChecked.Value;
                 Set.IncludeProcesses = chkProcesses.IsChecked.Value;
                 Set.IncludeWindows = chkWindows.IsChecked.Value;
+                if(cbbStartUp.SelectedIndex==0)
+                {
+                    WpfCodes.Program.Startup.CancelRunWhenStartup("ComputerUsage");
+                }
+                else
+                {
+                    if(cbbStartUp.SelectedIndex==1)
+                    {
+                        WpfCodes.Program.Startup.SetRunWhenStartup("ComputerUsage");
+                        Set.NoWindowWhenStartup = false;
+                    }
+                    else
+                    {
+                        WpfCodes.Program.Startup.SetRunWhenStartup("ComputerUsage","noWindow");
+                        Set.NoWindowWhenStartup = true;
+
+                    }
+                }
                 SaveSettings();
 
                 btn.IsEnabled = false;

@@ -20,8 +20,9 @@
                 <ColumnDefinition Width="Auto"/>
 
             </Grid.ColumnDefinitions>
-            <flat:UneditableComboBox x:Name="cbbSelectDate"/>
-            <flat:Button Grid.Column="2" Click="Button_Click">绘制</flat:Button>
+            <flat:UneditableComboBox x:Name="cbbSelectDate" SelectionChanged="cbbSelectDate_SelectionChanged"/>
+            <TextBlock x:Name="tbkTotalTime" VerticalAlignment="Center" Grid.Column="2"/>
+            <!--<flat:Button Grid.Column="2" Click="Button_Click">绘制</flat:Button>-->
         </Grid>
         <Viewbox Grid.Row="2">
             <Grid>
