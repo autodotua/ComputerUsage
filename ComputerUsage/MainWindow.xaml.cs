@@ -59,7 +59,7 @@ namespace ComputerUsage
 
         private void WindowLoadedEventHandler(object sender, RoutedEventArgs e)
         {
- 
+
 
         }
 
@@ -74,12 +74,16 @@ namespace ComputerUsage
 
         private void ChartBtnClickEventHandler(object sender, RoutedEventArgs e)
         {
-            switch((sender as Button).Tag)
+            switch ((sender as Button).Tag)
             {
                 case "1":
-                   var win = new UcBlockDiagram();
-                    win.LoadDateComboBox();
-                    frmChart.Content = win;
+                    var ucBlockDiagram = new UcBlockDiagram();
+                    ucBlockDiagram.LoadDateComboBox();
+                    frmChart.Content = ucBlockDiagram;
+                    break;
+                case "2":
+                    var ucForegroundWindowList = new UcForegroundWindowList();
+                    frmChart.Content = ucForegroundWindowList;
                     break;
             }
         }

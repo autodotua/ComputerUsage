@@ -40,6 +40,9 @@ namespace ComputerUsage
             InitializeComponent();
             lvwDataHistory.ItemsSource = dataHistoryInfos;
             lvwEventHistory.ItemsSource = eventHistoryInfos;
+            
+            LoadList(xml.DataElements);
+            currentPageCount = dataHistoryInfos.Count;
         }
 
         public void AddToList(DataInfo info)
@@ -87,9 +90,14 @@ namespace ComputerUsage
             else if (btn.Name == "btnNextPage")
             {
                 cbbPageSelection.SelectedIndex++;
-
             }
-            else
+            else if(btn.Name=="btnLoad")
+            {
+                xml.ReloadFields();
+                LoadList(xml.DataElements);
+                currentPageCount = dataHistoryInfos.Count;
+            }
+            else//说明是列表中的按钮
             {
                 object[] tag = btn.Tag as object[];
                 DateTime time = (DateTime)tag[0];
@@ -120,9 +128,7 @@ namespace ComputerUsage
                 }
             }
         }
-
-
-
+        
 
         private void LoadList(List<XmlElement> elements)
         {
@@ -177,9 +183,7 @@ namespace ComputerUsage
         {
             return first.ToString() + " - " + last.ToString() + "     " + beginTime + " ~ " + endTime;
         }
-
-
-
+        
         private void PageSelectionChangedEventHandler(object sender, SelectionChangedEventArgs e)
         {
 
@@ -267,10 +271,8 @@ namespace ComputerUsage
             }
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        private void LoadedEventHandler(object sender, RoutedEventArgs e)
         {
-            LoadList(xml.DataElements);
-            currentPageCount = dataHistoryInfos.Count;
         }
 
     }

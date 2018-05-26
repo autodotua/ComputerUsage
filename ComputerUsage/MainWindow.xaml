@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:ComputerUsage"
         mc:Ignorable="d"
         Loaded="WindowLoadedEventHandler"
-        Title="MainWindow" Height="450" Width="800">
+        Title="计算机使用情况统计" Height="600" Width="1000">
 
     <Window.Resources>
         <SolidColorBrush x:Key="back">White</SolidColorBrush>
@@ -93,7 +93,7 @@
                     <flat:Button Tag="1" Margin="0,4" Click="ChartBtnClickEventHandler">每日使用情况块状图</flat:Button>
                     <flat:Button Tag="2" Margin="0,4" Click="ChartBtnClickEventHandler">前台窗口统计表</flat:Button>
                 </StackPanel>
-                <Frame x:Name="frmChart" Grid.Column="2"/>
+                <Frame x:Name="frmChart" NavigationUIVisibility="Hidden" Grid.Column="2"/>
             </Grid>
         </TabItem>
         <TabItem x:Name="tabSettings" Header="设置" Selector.Selected="TabItem_Selected" >

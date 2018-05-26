@@ -4,7 +4,7 @@ namespace ComputerUsage
 {
     public class Settings : WpfCodes.Program.SettingsBase
     {
-        protected override string Path { get => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ComputerUsage\\Settings.xml"; set { }}
+        protected override string Path { get =>GlobalDatas. ConfigDirectory + "\\Settings.xml"; set { }}
 
         public int ItemsCountOfEachPage { get; set; } = 50;
         public int TimerInterval { get; set; } = 59;

@@ -1,0 +1,120 @@
+﻿<UserControl x:Class="ComputerUsage.UcForegroundWindowList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                        xmlns:flat="clr-namespace:WpfControls.FlatStyle;assembly=WpfControls"
+                        xmlns:picker="clr-namespace:WpfControls.Picker;assembly=WpfControls"
+
+             xmlns:local="clr-namespace:ComputerUsage"
+           Loaded="UserControl_Loaded"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <GridSplitter Width="4" Background="#FFBBBBBB" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.Column="1"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="8"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <picker:DateRangePicker x:Name="range" DateSelectionAvailableAndChanged="range_DateSelectionChanged"/>
+                <!--<flat:Button x:Name="btnLoad" HorizontalAlignment="Right" DisableTimeAfterClicking="1000" Click="BtnloadClickEventHandler">查看</flat:Button>-->
+            </Grid>
+            <flat:ListView x:Name="lvw" Grid.Row="2">
+                <flat:ListView.View>
+                    <GridView>
+                        <GridView.Columns>
+                            <GridViewColumn Header="名称" Width="144" DisplayMemberBinding="{Binding Name}"/>
+                            <GridViewColumn Header="时间" DisplayMemberBinding="{Binding Time}"/>
+
+                        </GridView.Columns>
+                    </GridView>
+                </flat:ListView.View>
+            </flat:ListView>
+
+        </Grid>
+
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="Auto"/>
+
+            </Grid.RowDefinitions>
+
+            
+            <flat:ListView x:Name="lvwWindowClass"  SelectionMode="Single" >
+                <flat:ListView.View>
+                    <GridView>
+                        <GridView.Columns>
+                            <GridViewColumn Header="名字" >
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <flat:TextBox MinWidth="72" Text="{Binding Name}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="属性">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <flat:UneditableComboBox SelectedIndex="{Binding PropertyTypeIndex}">
+                                            <ComboBoxItem>窗口标题</ComboBoxItem>
+                                            <ComboBoxItem>窗口类名</ComboBoxItem>
+                                            <ComboBoxItem>窗口所属进程</ComboBoxItem>
+                                        </flat:UneditableComboBox>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+
+                            <GridViewColumn Header="关系">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <flat:UneditableComboBox MinWidth="96" SelectedIndex="{Binding PropertyMatchModeIndex}">
+                                            <ComboBoxItem>包含</ComboBoxItem>
+                                            <ComboBoxItem>等于</ComboBoxItem>
+                                            <ComboBoxItem>与正则匹配</ComboBoxItem>
+                                        </flat:UneditableComboBox>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+
+                            <GridViewColumn Header="值" >
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <flat:TextBox MinWidth="72" Text="{Binding Value}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+
+
+                            <GridViewColumn Header="删除">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <flat:Button Content="🗑️" Click="Button_Click_1" Tag="{Binding ButtonTag}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+
+                        </GridView.Columns>
+                    </GridView>
+                </flat:ListView.View>
+            </flat:ListView>
+            <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal">
+                <flat:Button x:Name="btnNew" Margin="4,0" Click="Button_Click" >新建</flat:Button>
+                <flat:Button x:Name="btnClear" Margin="4,0" Click="Button_Click" >清空</flat:Button>
+                <flat:Button x:Name="btnReset" Margin="4,0" Click="Button_Click" >重置</flat:Button>
+
+                <flat:Button x:Name="btnSave" Margin="4,0" Click="Button_Click" DisableTimeAfterClicking="1000">保存</flat:Button>
+
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

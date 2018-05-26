@@ -25,14 +25,14 @@ namespace ComputerUsage
                 info = new DataInfo();
                 xml.Write(info);
             //});
-            App.Current.Dispatcher.Invoke(() =>
-            {
-                if (App.Current.MainWindow != null)
-                {
-                    (App.Current.MainWindow as MainWindow).ucHistoryList.AddToList(info);
-                    //App.Current.MainWindow.. AddToList(info);
-                }
-            });
+            //App.Current.Dispatcher.Invoke(() =>
+            //{
+            //    if (App.Current.MainWindow != null)
+            //    {
+            //        (App.Current.MainWindow as MainWindow).ucHistoryList.AddToList(info);
+            //        //App.Current.MainWindow.. AddToList(info);
+            //    }
+            //});
         }
 
     }

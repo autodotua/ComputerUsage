@@ -15,6 +15,9 @@ namespace ComputerUsage
         //public static int TimerInterval { get; set; }
 
         // public static Properties.Settings Set => Properties.Settings.Default;
+
+       public static  string ConfigDirectory => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ComputerUsage";
+
         public static Settings Set = new Settings();
         public static void LoadSettings()
         {
@@ -33,6 +36,20 @@ namespace ComputerUsage
             //Set.IncludeWindows = Set.IncludeWindows;
             //Set.IncludeProcesses = Set.IncludeProcesses;
             Set.Save();
+        }
+
+
+
+        public static string MinuteToTimeString(int minute)
+        {
+            if (minute < 60)
+            {
+                return  "00:" + minute.ToString("00");
+            }
+            else
+            {
+                return (minute / 60).ToString("00") + ":" + (minute % 60).ToString("00");
+            }
         }
     }
 }

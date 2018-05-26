@@ -13,16 +13,15 @@ namespace ComputerUsage
     {
         XmlDocument xml = new XmlDocument();
         XmlElement root;
-        readonly string xmlDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ComputerUsage";
 
         string xmlPath;
 
         public XmlHelper()
         {
-            xmlPath = xmlDirectory + "\\history.xml";
+            xmlPath = ConfigDirectory + "\\history.xml";
             if (!File.Exists(xmlPath))
             {
-                Directory.CreateDirectory(xmlDirectory);
+                Directory.CreateDirectory(ConfigDirectory);
                 XmlDeclaration xdec = xml.CreateXmlDeclaration("1.0", "UTF-8", null);
                 xml.AppendChild(xdec);
                 root = xml.CreateElement("ComputerUsage");
@@ -176,14 +175,14 @@ namespace ComputerUsage
             return infos;
         }
 
-        private BatteryInfo GetBatteryInfo(XmlElement element)
+        public BatteryInfo GetBatteryInfo(XmlElement element)
         {
             return new BatteryInfo(
               int.Parse(element.GetAttribute("Percent")),
               bool.Parse(element.GetAttribute("PowerOnline")));
         }
 
-        private ProcessInfo GetProcessInfo(XmlElement element)
+        public ProcessInfo GetProcessInfo(XmlElement element)
         {
             return new ProcessInfo(
                  long.Parse(element.GetAttribute("PhysicalMemory")),
@@ -193,7 +192,7 @@ namespace ComputerUsage
                  element.GetAttribute("Name"),
                  bool.Parse(element.GetAttribute("Responding")));
         }
-        private WindowInfo GetWindowInfo(XmlElement element)
+        public WindowInfo GetWindowInfo(XmlElement element)
         {
             return new WindowInfo(
              (IntPtr)int.Parse(element.GetAttribute("Handle")),

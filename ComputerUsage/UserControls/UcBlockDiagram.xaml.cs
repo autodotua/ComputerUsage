@@ -152,14 +152,7 @@ namespace ComputerUsage
             {
                 DrawPoint(time.Minute, time.Hour);
             }
-            if(dates.Count<60)
-            {
-                tbkTotalTime.Text = "共 00:" + dates.Count.ToString("00");
-            }
-            else
-            {
-                tbkTotalTime.Text = "共 "+(dates.Count/60).ToString("00")+":" + (dates.Count%60).ToString("00");
-            }
+            tbkTotalTime.Text = "共 " + MinuteToTimeString(dates.Count);
         }
     }
 
