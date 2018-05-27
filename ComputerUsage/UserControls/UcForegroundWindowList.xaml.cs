@@ -139,7 +139,7 @@ namespace ComputerUsage
                 foregroundWindowUsages = new ObservableCollection<ForegroundWindowUsage>();
                 var datas = xml.DataElements.Where(p =>
                 {
-                    DateTime date = DateTime.Parse(p.GetAttribute("Time"));
+                    DateTime date = DateTime.Parse(p.GetAttribute("Time")).Date;
                     return date >= dateFrom && date <=dateTo;
                 });
                 foreach (var data in datas)

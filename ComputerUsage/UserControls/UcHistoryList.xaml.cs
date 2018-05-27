@@ -38,6 +38,10 @@ namespace ComputerUsage
         public UcHistoryList()
         {
             InitializeComponent();
+
+            lvwDataHistory.CloseTriggers();
+            lvwEventHistory.CloseTriggers();
+
             lvwDataHistory.ItemsSource = dataHistoryInfos;
             lvwEventHistory.ItemsSource = eventHistoryInfos;
             xml.ReloadFields();

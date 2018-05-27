@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-                        xmlns:flat="clr-namespace:WpfControls.FlatStyle;assembly=WpfControls"
-                        xmlns:picker="clr-namespace:WpfControls.Picker;assembly=WpfControls"
-                        xmlns:p="clr-namespace:WpfControls.Progress;assembly=WpfControls"
+             xmlns:flat="clr-namespace:WpfControls.FlatStyle;assembly=WpfControls"
+             xmlns:picker="clr-namespace:WpfControls.Picker;assembly=WpfControls"
+             xmlns:p="clr-namespace:WpfControls.Progress;assembly=WpfControls"
 
              xmlns:local="clr-namespace:ComputerUsage"
              mc:Ignorable="d" 
