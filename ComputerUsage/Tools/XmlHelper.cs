@@ -56,7 +56,22 @@ namespace ComputerUsage
         {
             XmlElement element = xml.CreateElement("Event");
             element.SetAttribute("Time", DateTime.Now.ToString());
-            element.SetAttribute("Type", "程序启动");
+            if ((App.Current as App).startup)
+            {
+                element.SetAttribute("Type", "程序启动（开机自启）");
+            }
+            else
+            {
+                element.SetAttribute("Type", "程序启动");
+            }
+            root.AppendChild(element);
+            xml.Save(xmlPath);
+        }
+        public void WriteEvent(string @event)
+        {
+            XmlElement element = xml.CreateElement("Event");
+            element.SetAttribute("Time", DateTime.Now.ToString());
+            element.SetAttribute("Type", @event);
             root.AppendChild(element);
             xml.Save(xmlPath);
         }
@@ -75,7 +90,7 @@ namespace ComputerUsage
         {
             List<DataInfo> infos = new List<DataInfo>();
             int current = first;
-            while (current<= last)
+            while (current <= last)
             {
 
                 if (current >= DataCount)
@@ -118,8 +133,8 @@ namespace ComputerUsage
                 //    throw new Exception("XML文档被篡改");
                 //}
                 DateTime time = DateTime.Parse(element.GetAttribute("Time"));
-                List<WindowInfo> wins=null;
-                if (winElements!=null)
+                List<WindowInfo> wins = null;
+                if (winElements != null)
                 {
                     wins = new List<WindowInfo>();
                     foreach (XmlElement winElement in winElements.ChildNodes)
@@ -128,10 +143,10 @@ namespace ComputerUsage
                         wins.Add(GetWindowInfo(winElement));
                     }
                 }
-                List<ProcessInfo> pros=null;
-                if (processElements!=null)
+                List<ProcessInfo> pros = null;
+                if (processElements != null)
                 {
-                     pros = new List<ProcessInfo>();
+                    pros = new List<ProcessInfo>();
                     foreach (XmlElement processElement in processElements.ChildNodes)
                     {
 
@@ -139,9 +154,9 @@ namespace ComputerUsage
                     }
                 }
                 BatteryInfo battery = null;
-                if (batteryElement!=null)
+                if (batteryElement != null)
                 {
-                     battery = GetBatteryInfo(batteryElement);
+                    battery = GetBatteryInfo(batteryElement);
                 }
                 WindowInfo foreground = GetWindowInfo(foregroundWindowElement);
                 DataInfo history = new DataInfo(time, pros, wins, battery, foreground);
@@ -175,14 +190,14 @@ namespace ComputerUsage
             return infos;
         }
 
-        public BatteryInfo GetBatteryInfo(XmlElement element)
+        public static BatteryInfo GetBatteryInfo(XmlElement element)
         {
             return new BatteryInfo(
               int.Parse(element.GetAttribute("Percent")),
               bool.Parse(element.GetAttribute("PowerOnline")));
         }
 
-        public ProcessInfo GetProcessInfo(XmlElement element)
+        public static ProcessInfo GetProcessInfo(XmlElement element)
         {
             return new ProcessInfo(
                  long.Parse(element.GetAttribute("PhysicalMemory")),
@@ -192,7 +207,7 @@ namespace ComputerUsage
                  element.GetAttribute("Name"),
                  bool.Parse(element.GetAttribute("Responding")));
         }
-        public WindowInfo GetWindowInfo(XmlElement element)
+        public static WindowInfo GetWindowInfo(XmlElement element)
         {
             return new WindowInfo(
              (IntPtr)int.Parse(element.GetAttribute("Handle")),

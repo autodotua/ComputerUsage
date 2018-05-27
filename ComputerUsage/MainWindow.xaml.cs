@@ -36,7 +36,6 @@ namespace ComputerUsage
 
             InitializeComponent();
             UpdateColor(new SolidColorBrush(Colors.White));
-            xml.ReloadFields();
         }
         private void UpdateColor(SolidColorBrush value)
         {

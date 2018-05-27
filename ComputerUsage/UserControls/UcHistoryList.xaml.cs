@@ -40,8 +40,9 @@ namespace ComputerUsage
             InitializeComponent();
             lvwDataHistory.ItemsSource = dataHistoryInfos;
             lvwEventHistory.ItemsSource = eventHistoryInfos;
-            
-            LoadList(xml.DataElements);
+            xml.ReloadFields();
+
+            LoadList();
             currentPageCount = dataHistoryInfos.Count;
         }
 
@@ -91,10 +92,10 @@ namespace ComputerUsage
             {
                 cbbPageSelection.SelectedIndex++;
             }
-            else if(btn.Name=="btnLoad")
+            else if (btn.Name == "btnLoad")
             {
                 xml.ReloadFields();
-                LoadList(xml.DataElements);
+                LoadList();
                 currentPageCount = dataHistoryInfos.Count;
             }
             else//说明是列表中的按钮
@@ -128,10 +129,19 @@ namespace ComputerUsage
                 }
             }
         }
-        
 
-        private void LoadList(List<XmlElement> elements)
+
+        private void LoadList()
         {
+            List<XmlElement> elements=null;
+            if (cbbType.SelectedIndex==0)
+            {
+               elements = xml.DataElements;
+            }
+            else
+            {
+                elements = xml.EventElements;
+            }
             cbbPageSelection.Items.Clear();
             int count = elements.Count;
             int pageCount = (int)Math.Ceiling(1.0 * count / Set.ItemsCountOfEachPage);
@@ -177,13 +187,22 @@ namespace ComputerUsage
                 });
             }
             cbbPageSelection.SelectedIndex = cbbPageSelection.Items.Count - 1;
+            if (cbbType.SelectedIndex == 0)
+            {
+                lvwDataHistory.ScrollIntoView(lvwDataHistory.Items[lvwDataHistory.Items.Count - 1]);
+            }
+            else
+            {
+                lvwEventHistory.ScrollIntoView(lvwEventHistory.Items[lvwEventHistory.Items.Count - 1]);
+            }
+
         }
 
         private string GetComboBoxItemContent(int first, int last, string beginTime, string endTime)
         {
             return first.ToString() + " - " + last.ToString() + "     " + beginTime + " ~ " + endTime;
         }
-        
+
         private void PageSelectionChangedEventHandler(object sender, SelectionChangedEventArgs e)
         {
 
@@ -199,12 +218,16 @@ namespace ComputerUsage
                 dataHistoryInfos.Clear();
                 int last = (page == cbbPageSelection.Items.Count - 1) ? xml.DataElements.Count - 1 : page * Set.ItemsCountOfEachPage + Set.ItemsCountOfEachPage - 1;
                 SelectDataPage(page, first, last);
+                lvwDataHistory.ScrollIntoView(lvwDataHistory.Items[0]);
+
             }
             else
             {
                 eventHistoryInfos.Clear();
                 int last = (page == cbbPageSelection.Items.Count - 1) ? xml.EventElements.Count - 1 : page * Set.ItemsCountOfEachPage + Set.ItemsCountOfEachPage - 1;
                 SelectEventPage(page, first, last);
+                lvwEventHistory.ScrollIntoView(lvwEventHistory.Items[0]);
+
             }
 
         }
@@ -259,22 +282,30 @@ namespace ComputerUsage
             {
                 lvwDataHistory.Visibility = Visibility.Visible;
                 lvwEventHistory.Visibility = Visibility.Collapsed;
-                LoadList(xml.DataElements);
+                //LoadList(xml.DataElements);
 
             }
             else
             {
                 lvwDataHistory.Visibility = Visibility.Collapsed;
                 lvwEventHistory.Visibility = Visibility.Visible;
-                LoadList(xml.EventElements);
+                //LoadList(xml.EventElements);
 
             }
+            LoadList();
         }
 
         private void LoadedEventHandler(object sender, RoutedEventArgs e)
         {
         }
 
+        private void UserControl_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key==Key.F5)
+            {
+                ButtonsClickEventHandler(btnLoad, null);
+            }
+        }
     }
     public class DateConverter : IValueConverter
     {

@@ -25,7 +25,7 @@ namespace ComputerUsage
         {
             InitializeComponent();
             sldInterval.TextConvert = p => p.ToString() + "秒";
-            sldItemsCountOfEachPage.TextConvert = p => p.ToString() + "条";
+            sldItemsCountOfEachPage.TextConvert = p => ((int)p).ToString() + "条";
             if(WpfCodes.Program.Startup.WillRunWhenStartup("ComputerUsage"))
             {
                 if(Set.NoWindowWhenStartup)

@@ -5,9 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                         xmlns:flat="clr-namespace:WpfControls.FlatStyle;assembly=WpfControls"
                         xmlns:picker="clr-namespace:WpfControls.Picker;assembly=WpfControls"
+                        xmlns:p="clr-namespace:WpfControls.Progress;assembly=WpfControls"
 
              xmlns:local="clr-namespace:ComputerUsage"
-           Loaded="UserControl_Loaded"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -25,7 +25,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid>
-                <picker:DateRangePicker x:Name="range" DateSelectionAvailableAndChanged="range_DateSelectionChanged"/>
+                <picker:DateRangePicker x:Name="range" DateSelectionAvailableAndChanged="RangeDateSelectionChangedEventHandler"/>
                 <!--<flat:Button x:Name="btnLoad" HorizontalAlignment="Right" DisableTimeAfterClicking="1000" Click="BtnloadClickEventHandler">查看</flat:Button>-->
             </Grid>
             <flat:ListView x:Name="lvw" Grid.Row="2">
@@ -39,7 +39,7 @@
                     </GridView>
                 </flat:ListView.View>
             </flat:ListView>
-
+            <p:LoadingOverlay x:Name="loading" Grid.RowSpan="3" RingSize="0.1" IsEnabled="False"/>
         </Grid>
 
         <Grid Grid.Column="2">
@@ -98,7 +98,7 @@
                             <GridViewColumn Header="删除">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <flat:Button Content="🗑️" Click="Button_Click_1" Tag="{Binding ButtonTag}"/>
+                                        <flat:Button Content="🗑️" Click="BtnRemoveClickEventHandler" Tag="{Binding ButtonTag}"/>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -108,11 +108,11 @@
                 </flat:ListView.View>
             </flat:ListView>
             <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal">
-                <flat:Button x:Name="btnNew" Margin="4,0" Click="Button_Click" >新建</flat:Button>
-                <flat:Button x:Name="btnClear" Margin="4,0" Click="Button_Click" >清空</flat:Button>
-                <flat:Button x:Name="btnReset" Margin="4,0" Click="Button_Click" >重置</flat:Button>
+                <flat:Button x:Name="btnNew" Margin="4,0" Click="BtnsIntWindowClassClickEventHandler" >新建</flat:Button>
+                <flat:Button x:Name="btnClear" Margin="4,0" Click="BtnsIntWindowClassClickEventHandler" >清空</flat:Button>
+                <flat:Button x:Name="btnReset" Margin="4,0" Click="BtnsIntWindowClassClickEventHandler" >重置</flat:Button>
 
-                <flat:Button x:Name="btnSave" Margin="4,0" Click="Button_Click" DisableTimeAfterClicking="1000">保存</flat:Button>
+                <flat:Button x:Name="btnSave" Margin="4,0" Click="BtnsIntWindowClassClickEventHandler" DisableTimeAfterClicking="1000">保存</flat:Button>
 
             </StackPanel>
         </Grid>

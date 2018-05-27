@@ -32,6 +32,7 @@ namespace ComputerUsage
         {
             InitializeComponent();
             lvwWindowClass.CloseTriggers();
+            xml.ReloadFields();
             try
             {
                 windowClasses = new ObservableCollection<WindowClass>(WpfCodes.Basic.Enumerable.ImportFromCsv<WindowClass>(ConfigDirectory + "\\WindowClasses.csv"));
@@ -46,7 +47,7 @@ namespace ComputerUsage
 
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void BtnsIntWindowClassClickEventHandler(object sender, RoutedEventArgs e)
         {
             switch ((sender as Button).Name)
             {
@@ -58,35 +59,27 @@ namespace ComputerUsage
                     break;
                 case "btnSave":
                     WpfCodes.Basic.Enumerable.ExportToCsvByClassProperties(windowClasses, ConfigDirectory + "\\WindowClasses.csv");
+                    RangeDateSelectionChangedEventHandler(null, null);
                     break;
                 case "btnReset":
                     try
                     {
                         windowClasses = new ObservableCollection<WindowClass>(WpfCodes.Basic.Enumerable.ImportFromCsv<WindowClass>(ConfigDirectory + "\\WindowClasses.csv"));
                     }
-                    catch
+                    catch(Exception ex)
                     {
-
+                        ShowException("读取文件失败！",ex);
                     }
                     lvwWindowClass.ItemsSource = windowClasses;
                     break;
             }
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void BtnRemoveClickEventHandler(object sender, RoutedEventArgs e)
         {
             windowClasses.Remove(windowClasses.FirstOrDefault(p => p.ButtonTag == (sender as Button).Tag as string));
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void BtnloadClickEventHandler(object sender, RoutedEventArgs e)
-        {
-         
-        }
 
 
         private void TryMatch(WindowInfo info)
@@ -118,40 +111,50 @@ namespace ComputerUsage
 
                 if (flag)
                 {
-                    if (foregroundWindowUsages.Any(p => p.Name == windowClass.Name))
+                    Dispatcher.Invoke(() =>
                     {
-                        var item = foregroundWindowUsages.FirstOrDefault(p => p.Name == windowClass.Name);
-                        item.count++;
-                    }
-                    else
-                    {
-                        foregroundWindowUsages.Add(new ForegroundWindowUsage(windowClass.Name));
-                    }
+
+                        if (foregroundWindowUsages.Any(p => p.Name == windowClass.Name))
+                        {
+                            var item = foregroundWindowUsages.FirstOrDefault(p => p.Name == windowClass.Name);
+                            item.count++;
+                        }
+                        else
+                        {
+                            foregroundWindowUsages.Add(new ForegroundWindowUsage(windowClass.Name));
+                        }
+                    });
                     return;
                 }
             }
         }
 
-        private void range_DateSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void RangeDateSelectionChangedEventHandler(object sender, SelectionChangedEventArgs e)
         {
-            foregroundWindowUsages = new ObservableCollection<ForegroundWindowUsage>();
-            var datas = xml.DataElements.Where(p =>
+            loading.Show();
+            DateTime dateFrom = range.DateFrom.Value;
+            DateTime dateTo = range.DateTo.Value;
+            await Task.Run(() =>
             {
-                DateTime date = DateTime.Parse(p.GetAttribute("Time"));
-                return date >= range.DateFrom && date <= range.DateTo;
-            });
-            foreach (var data in datas)
-            {
-                var windowElement = data.ChildNodes.Cast<XmlElement>().FirstOrDefault(p => p.Name == "ForegroundWindow");
-                if (windowElement == null)
+                foregroundWindowUsages = new ObservableCollection<ForegroundWindowUsage>();
+                var datas = xml.DataElements.Where(p =>
                 {
-                    continue;
+                    DateTime date = DateTime.Parse(p.GetAttribute("Time"));
+                    return date >= dateFrom && date <=dateTo;
+                });
+                foreach (var data in datas)
+                {
+                    var windowElement = data.ChildNodes.Cast<XmlElement>().FirstOrDefault(p => p.Name == "ForegroundWindow");
+                    if (windowElement == null)
+                    {
+                        continue;
+                    }
+                    TryMatch(XmlHelper.GetWindowInfo(windowElement));
+
                 }
-                TryMatch(xml.GetWindowInfo(windowElement));
 
-            }
-
-
+            });
+            loading.Hide();
             lvw.ItemsSource = foregroundWindowUsages.OrderByDescending(p => p.count);
         }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -16,8 +17,14 @@ namespace ComputerUsage
     {
         TrayIcon trayIcon;
         public BackgroundWork background;
+        public bool startup = false;
         private  void Application_Startup(object sender, StartupEventArgs e)
         {
+            if (e.Args.Length > 0 && e.Args[0] == "noWindow")
+            {
+                startup = true;
+              
+            }
             GlobalDatas.LoadSettings();
             background = new BackgroundWork();
             //await background.TimerTickEventHandler();
@@ -35,15 +42,14 @@ namespace ComputerUsage
             };
             trayIcon = new TrayIcon(ComputerUsage.Properties.Resources.ICON, "计算机使用情况", click, rightMouseClick);
             trayIcon.Show();
-
-
-            if(!(e.Args.Length>0 && e.Args[0] == "noWindow"))
+            if(!startup)
             {
                 click();
             }
-
-
+            ComputerDatas.RegistSystemEvents();
         }
+
+        
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
