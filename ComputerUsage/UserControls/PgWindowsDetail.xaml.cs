@@ -22,15 +22,19 @@ namespace ComputerUsage
     /// </summary>
     public partial class PgWindowsDetail : Page
     {
-        ObservableCollection<WindowInfo> windowInfos = new ObservableCollection<WindowInfo>();
+        ObservableCollection<WindowInfo> windowInfos;
         public PgWindowsDetail(WindowInfo[] wins)
         {
             InitializeComponent();
+            lvw.CloseTriggers();
+            windowInfos = new ObservableCollection<WindowInfo>(wins);
             lvw.ItemsSource = windowInfos;
-            foreach (var win in wins)
-            {
-                windowInfos.Add(win);
-            }
+        }
+
+        private void ButtonsClickEventHandler(object sender, RoutedEventArgs e)
+        {
+            ProcessInfo info = windowInfos.FirstOrDefault(p => p.DisplayHandle.Equals((sender as Button).Tag)).process;
+            (App.Current.MainWindow as MainWindow).ucHistoryList.frm.Content = new PgProcessesDetail(new ProcessInfo[] { info });
         }
     }
 

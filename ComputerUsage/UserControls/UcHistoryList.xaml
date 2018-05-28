@@ -14,6 +14,7 @@ Loaded="LoadedEventHandler"
     <UserControl.Resources>
         <local:DateConverter x:Key="converter"/>
 
+
     </UserControl.Resources>
     <Grid x:Name="grdHistoryTable">
         <Grid.ColumnDefinitions>
@@ -33,7 +34,7 @@ Loaded="LoadedEventHandler"
                 <RowDefinition Height="16"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <flat:UneditableComboBox HorizontalAlignment="Left" Width="144" SelectedIndex="0" x:Name="cbbType" SelectionChanged="TypeChangedEventHandler">
+            <flat:UneditableComboBox HorizontalAlignment="Left" Margin="2,0" Width="144" SelectedIndex="0" x:Name="cbbType" SelectionChanged="TypeChangedEventHandler">
                 <ComboBoxItem>记录</ComboBoxItem>
                 <ComboBoxItem>事件</ComboBoxItem>
             </flat:UneditableComboBox>
@@ -75,8 +76,17 @@ Loaded="LoadedEventHandler"
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="前台窗口" Width="128" DisplayMemberBinding="{Binding DisplayForegroundWindow}"/>
-
+                        <!--<GridViewColumn Header="前台窗口" Width="128" DisplayMemberBinding="{Binding DisplayForegroundWindow}"/>-->
+                        <GridViewColumn Header="前台窗口" Width="128">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <flat:Button
+                                    Content="{Binding DisplayForegroundWindow}"
+                                    Tag="{Binding Time,Mode=OneTime,Converter={StaticResource converter},ConverterParameter=foregroundWindow}"
+                                    Click="ButtonsClickEventHandler"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
 
 
                         <GridViewColumn Header="电池" Width="64">
@@ -118,9 +128,22 @@ Loaded="LoadedEventHandler"
             </Grid>
 
         </Grid>
-        <GroupBox Grid.Column="2" Header="详情">
-            <Frame x:Name="frm"  NavigationUIVisibility="Hidden"/>
-        </GroupBox>
+        <Grid Grid.Column="2" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="8"/>
+                <RowDefinition Height="7*"/>
+                
+            </Grid.RowDefinitions>
+            <TextBlock Text="详情" Margin="4,0,0,0" VerticalAlignment="Center" FontSize="16"/>
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <flat:Button x:Name="btnGoBack" Margin="4,0" IsEnabled="{Binding ElementName=frm, Path=CanGoBack}" Click="NavigationButtonsClickEventHandler">←</flat:Button>
+                <flat:Button x:Name="btnGoFoward" Margin="4,0" IsEnabled="{Binding ElementName=frm, Path=CanGoForward}" Click="NavigationButtonsClickEventHandler">→</flat:Button>
+
+            </StackPanel>
+            <Frame x:Name="frm" Grid.Row=" 2" NavigationUIVisibility="Hidden"/>
+
+        </Grid>
     </Grid>
 
 </UserControl>

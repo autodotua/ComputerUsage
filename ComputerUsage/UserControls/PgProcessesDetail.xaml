@@ -11,9 +11,36 @@
         <flat:ListView x:Name="lvw" HorizontalContentAlignment="Center">
             <flat:ListView.View>
                 <GridView >
-                    <GridViewColumn Header="PID"   DisplayMemberBinding="{Binding DisplayId}"/>
-                    <GridViewColumn Header="名称"   DisplayMemberBinding="{Binding DisplayName}"/>
-                    <GridViewColumn Header="主窗口"   DisplayMemberBinding="{Binding DisplayWindow}"/>
+                    <GridViewColumn Header="PID"  >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox  BorderThickness="0" IsReadOnly="True" Text="{Binding DisplayId, Mode=OneTime}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="名称"  >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox  BorderThickness="0" IsReadOnly="True" Text="{Binding DisplayName, Mode=OneTime}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                   
+                    <GridViewColumn Header="主窗口"   >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox  BorderThickness="0" IsReadOnly="True" Text="{Binding DisplayWindow, Mode=OneTime}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="主模块地址"   >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox  BorderThickness="0" IsReadOnly="True" Text="{Binding DisplayMainModuleFileName, Mode=OneTime}"/>
+                            </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                     <GridViewColumn Header="虚拟内存"   DisplayMemberBinding="{Binding DisplayVirtualMemory}"/>
                     <GridViewColumn Header="物理内存"   DisplayMemberBinding="{Binding DisplayPhysicalMemory}"/>
                     <GridViewColumn Header="响应"   DisplayMemberBinding="{Binding DisplayResponding}"/>

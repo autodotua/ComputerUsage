@@ -67,15 +67,17 @@ namespace ComputerUsage
             root.AppendChild(element);
             xml.Save(xmlPath);
         }
-        public void WriteEvent(string @event)
+
+        public void Write(string @event)
         {
             XmlElement element = xml.CreateElement("Event");
             element.SetAttribute("Time", DateTime.Now.ToString());
             element.SetAttribute("Type", @event);
+            LastEvent = @event;
             root.AppendChild(element);
             xml.Save(xmlPath);
         }
-
+        public string LastEvent { get; set; }
         public int Count => root.ChildNodes.Count;
         public List<XmlElement> dataElements;
         public List<XmlElement> eventElements;
@@ -205,14 +207,22 @@ namespace ComputerUsage
                  int.Parse(element.GetAttribute("Id")),
                  long.Parse(element.GetAttribute("VirtualMemory")),
                  element.GetAttribute("Name"),
-                 bool.Parse(element.GetAttribute("Responding")));
+                 bool.Parse(element.GetAttribute("Responding")),
+                element.GetAttribute("MainModuleFileName")??"" );
         }
         public static WindowInfo GetWindowInfo(XmlElement element)
         {
+            XmlElement processElement = element.ChildNodes.Cast<XmlElement>().FirstOrDefault(p => p.Name == "Process");
+            ProcessInfo process = null;
+            if(processElement!=null)
+            {
+                process = GetProcessInfo(processElement);
+            }
             return new WindowInfo(
              (IntPtr)int.Parse(element.GetAttribute("Handle")),
              element.GetAttribute("Name"),
-             element.GetAttribute("ClassName"));
+             element.GetAttribute("ClassName"),
+             process);
         }
 
 
@@ -232,7 +242,7 @@ namespace ComputerUsage
             {
                 element.AppendChild(GetProcessXml(info.processes));
             }
-            element.AppendChild(GetForegroundWindowXml(info.foregroundWindow));
+            element.AppendChild(GetWindowXml(info.foregroundWindow));
             root.AppendChild(element);
 
             xml.Save(xmlPath);
@@ -256,19 +266,22 @@ namespace ComputerUsage
                 child.SetAttribute("Handle", win.handle.ToString());
                 child.SetAttribute("Name", win.name);
                 child.SetAttribute("ClassName", win.className);
+                XmlElement processElement = GetProcessXml(win.process);
+                child.AppendChild(processElement);
                 element.AppendChild(child);
             }
             return element;
         }
 
-        private XmlElement GetForegroundWindowXml(WindowInfo win)
+        private XmlElement GetWindowXml(WindowInfo win)
         {
             XmlElement element = xml.CreateElement("ForegroundWindow");
 
             element.SetAttribute("Handle", win.handle.ToString());
             element.SetAttribute("Name", win.name);
             element.SetAttribute("ClassName", win.className);
-
+            XmlElement processElement = GetProcessXml(win.process);
+            element.AppendChild(processElement);
             return element;
         }
 
@@ -277,17 +290,33 @@ namespace ComputerUsage
             XmlElement element = xml.CreateElement("Processes");
             foreach (var process in processes)
             {
-                XmlElement child = xml.CreateElement("Process");
-                child.SetAttribute("Id", process.id.ToString());
-                child.SetAttribute("Name", process.name);
-                child.SetAttribute("PhysicalMemory", process.physicalMemory.ToString());
-                child.SetAttribute("VirtualMemory", process.virtualMemory.ToString());
-                child.SetAttribute("Window", process.window);
-                child.SetAttribute("Responding", process.responding.ToString());
+                //XmlElement child = xml.CreateElement("Process");
+                //child.SetAttribute("Id", process.id.ToString());
+                //child.SetAttribute("Name", process.name);
+                //child.SetAttribute("PhysicalMemory", process.physicalMemory.ToString());
+                //child.SetAttribute("VirtualMemory", process.virtualMemory.ToString());
+                //child.SetAttribute("Window", process.window);
+                //child.SetAttribute("Responding", process.responding.ToString());
 
-                element.AppendChild(child);
+                element.AppendChild(GetProcessXml(process));
             }
             return element;
         }
+        private XmlElement GetProcessXml(ProcessInfo process)
+        {
+         
+                XmlElement element = xml.CreateElement("Process");
+                element.SetAttribute("Id", process.id.ToString());
+                element.SetAttribute("Name", process.name);
+                element.SetAttribute("PhysicalMemory", process.physicalMemory.ToString());
+                element.SetAttribute("VirtualMemory", process.virtualMemory.ToString());
+                element.SetAttribute("Window", process.window);
+                element.SetAttribute("Responding", process.responding.ToString());
+            element.SetAttribute("MainModuleFileName", process.mainModuleFileName);
+
+
+            return element;
+        }
+
     }
 }

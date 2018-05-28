@@ -125,6 +125,12 @@ namespace ComputerUsage
                             page = new PgWindowsDetail(info.windows);
                         }
                         break;
+                    case "foregroundWindow":
+                        if(info.foregroundWindow!=null)
+                        {
+                            page = new PgWindowsDetail(new WindowInfo[] { info.foregroundWindow });
+                        }
+                        break;
                 }
 
                 if (page != null)
@@ -191,13 +197,13 @@ namespace ComputerUsage
                 });
             }
             cbbPageSelection.SelectedIndex = cbbPageSelection.Items.Count - 1;
-            if (cbbType.SelectedIndex == 0)
+            if (cbbType.SelectedIndex == 0 && dataHistoryInfos.Count>0)
             {
-                lvwDataHistory.ScrollIntoView(lvwDataHistory.Items[lvwDataHistory.Items.Count - 1]);
+                lvwDataHistory.ScrollIntoView(dataHistoryInfos.Last());
             }
-            else
+            else if(eventHistoryInfos.Count>0)
             {
-                lvwEventHistory.ScrollIntoView(lvwEventHistory.Items[lvwEventHistory.Items.Count - 1]);
+                lvwEventHistory.ScrollIntoView(eventHistoryInfos.Last());
             }
 
         }
@@ -247,7 +253,7 @@ namespace ComputerUsage
             {
                 btnNextPage.IsEnabled = false;
             }
-            else if (page == 0)
+             if (page == 0)
             {
                 btnLastPage.IsEnabled = false;
             }
@@ -308,6 +314,18 @@ namespace ComputerUsage
             if(e.Key==Key.F5)
             {
                 ButtonsClickEventHandler(btnLoad, null);
+            }
+        }
+
+        private void NavigationButtonsClickEventHandler(object sender, RoutedEventArgs e)
+        {
+            if((sender as Button).Name== "btnGoBack")
+            {
+                frm.GoBack();
+            }
+            else
+            {
+                frm.GoForward();
             }
         }
     }

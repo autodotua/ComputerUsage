@@ -57,7 +57,7 @@ namespace ComputerUsage
         public WindowInfo[] windows;
         public string DisplayWindowCount => windows==null?"无": windows.Length.ToString();
         public WindowInfo foregroundWindow;
-        public string DisplayForegroundWindow => foregroundWindow.name + " - " + foregroundWindow.className;
+        public string DisplayForegroundWindow => foregroundWindow.name;
 
         public BatteryInfo battery;
         public string DisplayBatteryLifePercent => battery==null?"无":battery.Percent + "%";

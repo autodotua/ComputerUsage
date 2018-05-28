@@ -1,4 +1,4 @@
-Ôªøusing System;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Win32;
-
+using static ComputerUsage.GlobalDatas;
 namespace ComputerUsage
 {
     public static class ComputerDatas
@@ -20,35 +20,35 @@ namespace ComputerUsage
         }
 
 
-        #region ËøõÁ®ã
+        #region Ω¯≥Ã
         public static Process[] GetProcessList()
         {
             return Process.GetProcesses();
         }
         #endregion
 
-        #region Á™óÂè£
+        #region ¥∞ø⁄
         private delegate bool WindowEnumDelegate(IntPtr hWnd, int lParam);
 
-        //Áî®Êù•ÈÅçÂéÜÊâÄÊúâÁ™óÂè£ 
+        //”√¿¥±È¿˙À˘”–¥∞ø⁄ 
         [DllImport("user32.dll")]
         private static extern bool EnumWindows(WindowEnumDelegate lpEnumFunc, int lParam);
 
-        //Ëé∑ÂèñÁ™óÂè£Text 
+        //ªÒ»°¥∞ø⁄Text 
         [DllImport("user32.dll")]
         private static extern int GetWindowTextW(IntPtr hWnd, [MarshalAs(UnmanagedType.LPWStr)]StringBuilder lpString, int nMaxCount);
 
-        //Ëé∑ÂèñÁ™óÂè£Á±ªÂêç 
+        //ªÒ»°¥∞ø⁄¿‡√˚ 
         [DllImport("user32.dll")]
         private static extern int GetClassNameW(IntPtr hWnd, [MarshalAs(UnmanagedType.LPWStr)]StringBuilder lpString, int nMaxCount);
 
         [DllImport("user32.dll")]
-        public static extern IntPtr GetForegroundWindow();
+        private static extern IntPtr GetForegroundWindow();
 
 
         public static WindowInfo[] GetAllWindowsInfo()
         {
-            //Áî®Êù•‰øùÂ≠òÁ™óÂè£ÂØπË±° ÂàóË°®
+            //”√¿¥±£¥Ê¥∞ø⁄∂‘œÛ ¡–±Ì
             List<WindowInfo> windowList = new List<WindowInfo>();
 
             //enum all desktop windows 
@@ -67,20 +67,21 @@ namespace ComputerUsage
         {
             return GetWindowInfo(GetForegroundWindow());
         }
-
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern int GetWindowThreadProcessId(IntPtr hwnd, out int ID);   //ªÒ»°œﬂ≥ÃID  
         public static WindowInfo GetWindowInfo(IntPtr handle)
         {
-            WindowInfo win = new WindowInfo();
-            StringBuilder str = new StringBuilder(256);
+   
+            StringBuilder winHeader = new StringBuilder(256);
+            StringBuilder winClassName = new StringBuilder(256);
 
-            win.handle = handle;
+            GetWindowTextW(handle, winHeader, winHeader.Capacity);
+            GetClassNameW(handle, winClassName, winClassName.Capacity);
 
-            GetWindowTextW(handle, str, str.Capacity);
-            win.name = str.ToString();
-
-            GetClassNameW(handle, str, str.Capacity);
-            win.className = str.ToString();
-            return win;
+            //Ω¯≥ÃID  
+            int calcTD = 0;    //œﬂ≥ÃID  
+            calcTD = GetWindowThreadProcessId(handle, out int calcID);
+            return  new WindowInfo(handle,winHeader.ToString(),winClassName.ToString(),new ProcessInfo( Process.GetProcessById(calcID))); 
         }
 
 
@@ -99,23 +100,26 @@ namespace ComputerUsage
             switch (e.Mode)
             {
                 case PowerModes.Resume:
-                    GlobalDatas.xml.WriteEvent("Á≥ªÁªüÊÅ¢Â§ç");
+                    xml.Write("œµÕ≥ª÷∏¥");
                     break;
 
                 case PowerModes.StatusChange:
 
                     var status = GetBatteryStatus();
-                    if (status.PowerLineStatus == PowerLineStatus.Online)
+                    if (status.PowerLineStatus == PowerLineStatus.Online )
                     {
-                        GlobalDatas.xml.WriteEvent("Êé•‰∏äÁîµÊ∫ê");
+                        if (xml.LastEvent != "Ω”…œµÁ‘¥")
+                        {
+                            xml.Write("Ω”…œµÁ‘¥");
+                        }
                     }
                     else if (status.PowerLineStatus == PowerLineStatus.Offline)
                     {
-                        GlobalDatas.xml.WriteEvent("Êãî‰∏ãÁîµÊ∫ê");
+                        xml.Write("∞Œœ¬µÁ‘¥");
                     }
                     break;
                 case PowerModes.Suspend:
-                    GlobalDatas.xml.WriteEvent("Á≥ªÁªü‰ºëÁú†");
+                    xml.Write("œµÕ≥–›√ﬂ");
                     break;
             }
         }
@@ -125,11 +129,11 @@ namespace ComputerUsage
             switch (e.Reason)
             {
                 case SessionEndReasons.Logoff:
-                    GlobalDatas.xml.WriteEvent("Áî®Êà∑Ê≥®ÈîÄ");
+                    xml.Write("”√ªß◊¢œ˙");
                     break;
 
                 case SessionEndReasons.SystemShutdown:
-                    GlobalDatas.xml.WriteEvent("Á≥ªÁªüÂÖ≥Èó≠");
+                    xml.Write("œµÕ≥πÿ±’");
                     break;
             }
         }
@@ -140,36 +144,36 @@ namespace ComputerUsage
             switch (e.Reason)
             {
                 case SessionSwitchReason.ConsoleConnect:
-                    reason = "ÂºÄÂßãÊéßÂà∂Âè∞ËøûÊé•";
+                    reason = "ø™ ºøÿ÷∆Ã®¡¨Ω”";
                     break;
 
                 case SessionSwitchReason.ConsoleDisconnect:
-                    reason = "ÁªìÊùüÊéßÂà∂Âè∞ËøûÊé•";
+                    reason = "Ω· ¯øÿ÷∆Ã®¡¨Ω”";
                     break;
                 case SessionSwitchReason.RemoteConnect:
-                    reason = "ÂºÄÂßãËøúÁ®ãËøûÊé•";
+                    reason = "ø™ º‘∂≥Ã¡¨Ω”";
                     break;
                 case SessionSwitchReason.RemoteDisconnect:
-                    reason = "ÁªìÊùüËøúÁ®ãËøûÊé•";
+                    reason = "Ω· ¯‘∂≥Ã¡¨Ω”";
                     break;
 
                 case SessionSwitchReason.SessionLock:
-                    reason = "ÈîÅÂÆö";
+                    reason = "À¯∂®";
                     break;
                 case SessionSwitchReason.SessionLogoff:
-                    reason = "Ê≥®ÈîÄ";
+                    reason = "◊¢œ˙";
                     break;
                 case SessionSwitchReason.SessionLogon:
-                    reason = "ÁôªÂΩï";
+                    reason = "µ«¬º";
                     break;
                 case SessionSwitchReason.SessionUnlock:
-                    reason = "Ëß£ÈîÅ";
+                    reason = "Ω‚À¯";
                     break;
                 case SessionSwitchReason.SessionRemoteControl:
-                    reason = "ËøúÁ®ãÊéßÂà∂";
+                    reason = "‘∂≥Ãøÿ÷∆";
                     break;
             }
-            GlobalDatas.xml.WriteEvent("Áî®Êà∑Ôºö" + reason + "ÔºàÂΩìÂâçÁî®Êà∑‰∏∫Ôºö" + Environment.UserName + "Ôºâ");
+            xml.Write("”√ªß£∫" + reason + "£®µ±«∞”√ªßŒ™£∫" + Environment.UserName + "£©");
         }
     }
 

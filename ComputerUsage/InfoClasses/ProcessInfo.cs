@@ -25,9 +25,17 @@ namespace ComputerUsage
             virtualMemory = process.PagedMemorySize64;
             name = process.ProcessName;
             responding = process.Responding;
+            try
+            {
+                mainModuleFileName = process.MainModule.FileName;
+            }
+            catch
+            {
+
+            }
         }
 
-        public ProcessInfo(long physicalMemory, string window, int id, long virtualMemory, string name, bool responding)
+        public ProcessInfo(long physicalMemory, string window, int id, long virtualMemory, string name, bool responding,string mainModuleFileName)
         {
             this.physicalMemory = physicalMemory;
             this.window = window;
@@ -35,6 +43,7 @@ namespace ComputerUsage
             this.virtualMemory = virtualMemory;
             this.name = name;
             this.responding = responding;
+            this.mainModuleFileName = mainModuleFileName;
         }
 
         public long physicalMemory;
@@ -53,6 +62,11 @@ namespace ComputerUsage
         public string DisplayName => name;
 
         public string DisplayResponding => responding ? "是" : "否";
+
+        public string DisplayMainModuleFileName => mainModuleFileName;
+
         public bool responding;
+
+        public string mainModuleFileName="";
     }
 }

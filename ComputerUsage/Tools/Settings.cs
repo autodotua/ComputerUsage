@@ -12,5 +12,8 @@ namespace ComputerUsage
         public bool IncludeWindows { get; set; } = false;
         public bool IncludeProcesses { get; set; } = false;
         public bool NoWindowWhenStartup { get; set; } = false;
+
+        public int BackupInterval { get; set; } = 60;
+        public int BackupCount { get; set; } = 10;
     }
 }

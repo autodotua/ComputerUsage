@@ -26,6 +26,7 @@ namespace ComputerUsage
         public PgProcessesDetail(ProcessInfo[] processes)
         {
             InitializeComponent();
+            lvw.CloseTriggers();
             lvw.ItemsSource = processInfos;
             foreach (var process in processes)
             {
