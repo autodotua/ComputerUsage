@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -33,17 +34,24 @@ namespace ComputerUsage
             InitializeComponent();
             lvwWindowClass.CloseTriggers();
             xml.ReloadFields();
-            try
+            if (!File.Exists(ConfigDirectory + "\\WindowClasses.csv"))
             {
-                windowClasses = new ObservableCollection<WindowClass>(WpfCodes.Basic.Enumerable.ImportFromCsv<WindowClass>(ConfigDirectory + "\\WindowClasses.csv"));
+                File.Create(ConfigDirectory + "\\WindowClasses.csv");
             }
-            catch (Exception ex)
+            else
             {
-                ShowException("读取配置失败", ex);
+                try
+                {
+                    windowClasses = new ObservableCollection<WindowClass>(WpfCodes.Basic.Enumerable.ImportFromCsv<WindowClass>(ConfigDirectory + "\\WindowClasses.csv"));
+                }
+                catch (Exception ex)
+                {
+                    ShowException("读取配置失败", ex);
+                }
             }
             lvwWindowClass.ItemsSource = windowClasses;
-            range.DateFrom = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            range.DateTo = DateTime.Now.Date;
+            //range.DateFrom = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            range.DateFrom =range.DateTo = DateTime.Now.Date;
 
         }
 
@@ -124,7 +132,7 @@ namespace ComputerUsage
                             foregroundWindowUsages.Add(new ForegroundWindowUsage(windowClass.Name));
                         }
                     });
-                    return;
+                   // return;
                 }
             }
         }

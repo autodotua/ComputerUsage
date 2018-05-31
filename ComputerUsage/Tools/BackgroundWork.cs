@@ -37,6 +37,7 @@ namespace ComputerUsage
 
             if((DateTime.Now-lastBackupTime).TotalMinutes>Set.BackupInterval)
             {
+                lastBackupTime = DateTime.Now;
                 Backup();
             }
         }

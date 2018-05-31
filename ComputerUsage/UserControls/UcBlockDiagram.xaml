@@ -25,7 +25,7 @@
             <!--<flat:Button Grid.Column="2" Click="Button_Click">绘制</flat:Button>-->
         </Grid>
         <Viewbox Grid.Row="2">
-            <Grid>
+            <Grid x:Name="g">
                 <Canvas x:Name="cvsBackground" Background="White" Width="309" Height="126"/>
                 <Canvas x:Name="cvs" Background="Transparent" Width="309" Height="126"/>
             </Grid>  

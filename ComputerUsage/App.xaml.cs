@@ -1,14 +1,18 @@
-﻿using Microsoft.Win32;
+﻿#define DEBUG
+
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using WpfControls.ButtonBase;
+using static ComputerUsage.GlobalDatas;
 
 namespace ComputerUsage
 {
@@ -22,26 +26,25 @@ namespace ComputerUsage
         public bool startup = false;
         public App()
         {
-          
 
+#if (!DEBUG)
             if (WpfCodes.Program.Startup.HaveAnotherInstance("ComputerUsage"))
             {
                 WpfControls.Dialog.DialogHelper.ShowError("已存在另一实例，请不要重复运行！");
                 Environment.Exit(0);
                 return;
             }
-
+#endif
         }
 
-        private  void Application_Startup(object sender, StartupEventArgs e)
+        private void ApplicationStartupEventHandler(object sender, StartupEventArgs e)
         {
+            ConcernConfigPath();
+            Load();
             if (e.Args.Length > 0 && e.Args[0] == "noWindow")
             {
                 startup = true;
             }
-         
-
-            GlobalDatas.LoadSettings();
             background = new BackgroundWork();
             //await background.TimerTickEventHandler();
             void newWindow()
@@ -58,14 +61,40 @@ namespace ComputerUsage
             };
             trayIcon = new TrayIcon(ComputerUsage.Properties.Resources.ICON, "计算机使用情况", newWindow, rightMouseClick);
             trayIcon.Show();
-            if(!startup)
+            if (!startup)
             {
                 newWindow();
             }
             ComputerDatas.RegistSystemEvents();
         }
 
-        
+        private void ConcernConfigPath()
+        {
+            if (File.Exists("config.ini"))
+            {
+                string value = File.ReadAllText("config.ini");
+                if (value == "here")
+                {
+                    value= AppDomain.CurrentDomain.BaseDirectory + "Config";
+                }
+              
+                    ConfigDirectory = value;
+                
+                 if (!Directory.Exists(value))
+                
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(value);
+                        ConfigDirectory = value;
+                    }
+                    catch
+                    {
+                        ConfigDirectory = "";
+                    }
+                }
+            }
+        }
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {

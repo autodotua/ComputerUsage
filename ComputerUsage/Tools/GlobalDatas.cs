@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ namespace ComputerUsage
 {
     public static class GlobalDatas
     {
-        public static XmlHelper xml = new XmlHelper();
+        public static XmlHelper xml;
 
         //public static int Set.ItemsCountOfEachPage { get; set; }
 
@@ -16,17 +17,35 @@ namespace ComputerUsage
 
         // public static Properties.Settings Set => Properties.Settings.Default;
 
-       public static  string ConfigDirectory => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ComputerUsage";
-
-        public static Settings Set = new Settings();
-        public static void LoadSettings()
+        public static void Load()
         {
-            //Set.ItemsCountOfEachPage = Set.ItemCountOfEachPage;
-            //TimerInterval = Set.Interval;
-            //Set.IncludeBattery = Set.IncludeBattery;
-            //Set.IncludeWindows = Set.IncludeWindows;
-            //Set.IncludeProcesses = Set.IncludeProcesses;
+            xml = new XmlHelper();
+            Set = new Settings();
         }
+
+        public static string ConfigDirectory
+        {
+            get
+            {
+                if (Directory.Exists(configDirectory))
+                {
+                    return configDirectory;
+                }
+                else
+                {
+                    return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ComputerUsage";
+                }
+            }
+            set
+            {
+                configDirectory = value;
+            }
+        }
+
+        private static string configDirectory = "";
+
+        public static Settings Set;
+
 
         public static void SaveSettings()
         {
@@ -44,7 +63,7 @@ namespace ComputerUsage
         {
             if (minute < 60)
             {
-                return  "00:" + minute.ToString("00");
+                return "00:" + minute.ToString("00");
             }
             else
             {

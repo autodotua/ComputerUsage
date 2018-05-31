@@ -154,6 +154,7 @@ namespace ComputerUsage
             }
             tbkTotalTime.Text = "共 " + MinuteToTimeString(dates.Count);
         }
+
     }
 
 }
