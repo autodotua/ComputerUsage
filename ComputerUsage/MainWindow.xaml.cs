@@ -76,13 +76,17 @@ namespace ComputerUsage
             switch ((sender as Button).Tag)
             {
                 case "1":
-                    var ucBlockDiagram = new UcBlockDiagram();
-                    ucBlockDiagram.LoadDateComboBox();
-                    frmChart.Content = ucBlockDiagram;
+                    var ucBlockChart = new UcBlockChart();
+                    ucBlockChart.LoadDateComboBox();
+                    frmChart.Content = ucBlockChart;
                     break;
                 case "2":
                     var ucForegroundWindowList = new UcForegroundWindowList();
                     frmChart.Content = ucForegroundWindowList;
+                    break;
+                case "3":
+                    var ucBatteryChart = new UcBatteryChart();
+                    frmChart.Content = ucBatteryChart;
                     break;
             }
         }

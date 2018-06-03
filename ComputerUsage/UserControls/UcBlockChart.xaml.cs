@@ -20,9 +20,9 @@ namespace ComputerUsage
     /// <summary>
     /// BlockDiagram.xaml 的交互逻辑
     /// </summary>
-    public partial class UcBlockDiagram : UserControl
+    public partial class UcBlockChart : UserControl
     {
-        public UcBlockDiagram()
+        public UcBlockChart()
         {
             InitializeComponent();
             DrawBorder();

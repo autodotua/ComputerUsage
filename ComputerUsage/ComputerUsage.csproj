@@ -81,8 +81,11 @@
       <DependentUpon>PgWindowsDetail.xaml</DependentUpon>
     </Compile>
     <Compile Include="InfoClasses\ProcessInfo.cs" />
-    <Compile Include="UserControls\UcBlockDiagram.xaml.cs">
-      <DependentUpon>UcBlockDiagram.xaml</DependentUpon>
+    <Compile Include="UserControls\UcBlockChart.xaml.cs">
+      <DependentUpon>UcBlockChart.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\UcBatteryChart.xaml.cs">
+      <DependentUpon>UcBatteryChart.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\PgProcessesDetail.xaml.cs">
       <DependentUpon>PgProcessesDetail.xaml</DependentUpon>
@@ -102,7 +105,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UserControls\UcBlockDiagram.xaml">
+    <Page Include="UserControls\UcBlockChart.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\UcBatteryChart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

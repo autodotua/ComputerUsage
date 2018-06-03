@@ -161,7 +161,12 @@ namespace ComputerUsage
                     battery = GetBatteryInfo(batteryElement);
                 }
                 WindowInfo foreground = GetWindowInfo(foregroundWindowElement);
-                DataInfo history = new DataInfo(time, pros, wins, battery, foreground);
+                bool mouseMoved = false;
+                if(element.HasAttribute("MouseMoved"))
+                {
+                    mouseMoved = bool.Parse(element.GetAttribute("MouseMoved"));
+                }
+                DataInfo history = new DataInfo(time, pros, wins, battery, foreground,mouseMoved);
                 infos.Add(history);
 
                 current++;
@@ -243,6 +248,7 @@ namespace ComputerUsage
                 element.AppendChild(GetProcessXml(info.processes));
             }
             element.AppendChild(GetWindowXml(info.foregroundWindow));
+            element.SetAttribute("MouseMoved", info.mouseMoved.ToString());
             root.AppendChild(element);
 
             xml.Save(xmlPath);

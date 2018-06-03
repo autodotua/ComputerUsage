@@ -26,13 +26,16 @@ namespace ComputerUsage
                 battery = new BatteryInfo(GetBatteryStatus());
             }
             foregroundWindow = GetForegroundWindowInfo();
+            mouseMoved = MouseMoved();
+
         }
 
         public DataInfo(DateTime time,
            IEnumerable< ProcessInfo> processes,
            IEnumerable<WindowInfo> windows,
             BatteryInfo battery,
-            WindowInfo foregroundWindow)
+            WindowInfo foregroundWindow,
+            bool mouseMoved)
         {
             this.time = time;
             if (processes != null)
@@ -45,6 +48,7 @@ namespace ComputerUsage
             }
             this.battery = battery;
             this.foregroundWindow = foregroundWindow;
+            this.mouseMoved = mouseMoved;
         }
 
         public DateTime time;
@@ -91,7 +95,10 @@ namespace ComputerUsage
             
             }
         }
-        
+
+
+        public bool mouseMoved;
+        public string DisplayMouseMoved => mouseMoved ? "●" : "";
         
     }
 }

@@ -98,6 +98,8 @@ Loaded="LoadedEventHandler"
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
+                        <GridViewColumn Header="正在使用" DisplayMemberBinding="{Binding DisplayMouseMoved}"/>
+
                     </GridView>
                 </ListView.View>
             </flat:ListView>

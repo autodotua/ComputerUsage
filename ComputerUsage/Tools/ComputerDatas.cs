@@ -8,6 +8,8 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using static ComputerUsage.GlobalDatas;
+using System.Drawing;
+
 namespace ComputerUsage
 {
     public static class ComputerDatas
@@ -92,8 +94,7 @@ namespace ComputerUsage
         {
             return SystemInformation.PowerStatus;
         }
-
-
+        
 
         private static void SystemEventsPowerModeChangedEventHandler(object sender, PowerModeChangedEventArgs e)
         {
@@ -174,6 +175,31 @@ namespace ComputerUsage
                     break;
             }
             xml.Write("用户：" + reason + "（当前用户为：" + Environment.UserName + "）");
+        }
+
+
+
+        static Point lastPosition = new Point(0, 0);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern bool GetCursorPos(out Point pt);
+
+        public static Point GetCursorPosition()
+        {
+            GetCursorPos(out Point point);
+            return point;
+        }
+
+        public static bool MouseMoved()
+        {
+            bool flag = false;
+            Point currentPosition = GetCursorPosition();
+            if(currentPosition!=lastPosition)
+            {
+                flag = true;
+            }
+            lastPosition = currentPosition;
+            return flag;
         }
     }
 
