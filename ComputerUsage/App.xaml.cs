@@ -35,6 +35,23 @@ namespace ComputerUsage
                 return;
             }
 #endif
+
+            DispatcherUnhandledException += UnhandledExceptionEventHandler;
+        }
+
+        private void UnhandledExceptionEventHandler(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            WpfControls.Dialog.DialogHelper.ShowException("程序发生了未捕获的错误，即将退出", e.Exception);
+
+            try
+            {
+                File.AppendAllText("Exception.log", Environment.NewLine + Environment.NewLine + DateTime.Now.ToString() + Environment.NewLine + e.Exception.ToString());
+            }
+            catch(Exception ex)
+            {
+                WpfControls.Dialog.DialogHelper.ShowException("错误信息无法写入", ex);
+            }
+
         }
 
         private void ApplicationStartupEventHandler(object sender, StartupEventArgs e)

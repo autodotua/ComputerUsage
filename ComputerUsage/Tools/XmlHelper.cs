@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -30,7 +31,20 @@ namespace ComputerUsage
             }
             else
             {
-                xml.Load(xmlPath);
+                try
+                {
+                    xml.Load(xmlPath);
+                }
+                catch (Exception ex)
+                {
+                    if(WpfControls.Dialog.DialogHelper.ShowMessage("加载XML失败：" + ex.Message + Environment.NewLine + "是否打开配置文件夹进行检查？", WpfControls.Dialog.DialogType.Error, System.Windows.MessageBoxButton.YesNo)==0)
+                    {
+                        Process.Start(ConfigDirectory);
+                    }
+                    App.Current.Shutdown();
+
+
+                }
                 root = xml.LastChild as XmlElement;
             }
             ReloadFields();
@@ -162,11 +176,11 @@ namespace ComputerUsage
                 }
                 WindowInfo foreground = GetWindowInfo(foregroundWindowElement);
                 bool mouseMoved = false;
-                if(element.HasAttribute("MouseMoved"))
+                if (element.HasAttribute("MouseMoved"))
                 {
                     mouseMoved = bool.Parse(element.GetAttribute("MouseMoved"));
                 }
-                DataInfo history = new DataInfo(time, pros, wins, battery, foreground,mouseMoved);
+                DataInfo history = new DataInfo(time, pros, wins, battery, foreground, mouseMoved);
                 infos.Add(history);
 
                 current++;
@@ -213,13 +227,13 @@ namespace ComputerUsage
                  long.Parse(element.GetAttribute("VirtualMemory")),
                  element.GetAttribute("Name"),
                  bool.Parse(element.GetAttribute("Responding")),
-                element.GetAttribute("MainModuleFileName")??"" );
+                element.GetAttribute("MainModuleFileName") ?? "");
         }
         public static WindowInfo GetWindowInfo(XmlElement element)
         {
             XmlElement processElement = element.ChildNodes.Cast<XmlElement>().FirstOrDefault(p => p.Name == "Process");
             ProcessInfo process = null;
-            if(processElement!=null)
+            if (processElement != null)
             {
                 process = GetProcessInfo(processElement);
             }
@@ -310,14 +324,14 @@ namespace ComputerUsage
         }
         private XmlElement GetProcessXml(ProcessInfo process)
         {
-         
-                XmlElement element = xml.CreateElement("Process");
-                element.SetAttribute("Id", process.id.ToString());
-                element.SetAttribute("Name", process.name);
-                element.SetAttribute("PhysicalMemory", process.physicalMemory.ToString());
-                element.SetAttribute("VirtualMemory", process.virtualMemory.ToString());
-                element.SetAttribute("Window", process.window);
-                element.SetAttribute("Responding", process.responding.ToString());
+
+            XmlElement element = xml.CreateElement("Process");
+            element.SetAttribute("Id", process.id.ToString());
+            element.SetAttribute("Name", process.name);
+            element.SetAttribute("PhysicalMemory", process.physicalMemory.ToString());
+            element.SetAttribute("VirtualMemory", process.virtualMemory.ToString());
+            element.SetAttribute("Window", process.window);
+            element.SetAttribute("Responding", process.responding.ToString());
             element.SetAttribute("MainModuleFileName", process.mainModuleFileName);
 
 
