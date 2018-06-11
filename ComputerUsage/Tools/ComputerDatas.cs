@@ -1,4 +1,4 @@
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 using static ComputerUsage.GlobalDatas;
 using System.Drawing;
+using System.Net.NetworkInformation;
 
 namespace ComputerUsage
 {
@@ -73,7 +74,7 @@ namespace ComputerUsage
         public static extern int GetWindowThreadProcessId(IntPtr hwnd, out int ID);   //获取线程ID  
         public static WindowInfo GetWindowInfo(IntPtr handle)
         {
-   
+
             StringBuilder winHeader = new StringBuilder(256);
             StringBuilder winClassName = new StringBuilder(256);
 
@@ -83,7 +84,7 @@ namespace ComputerUsage
             //进程ID  
             int calcTD = 0;    //线程ID  
             calcTD = GetWindowThreadProcessId(handle, out int calcID);
-            return  new WindowInfo(handle,winHeader.ToString(),winClassName.ToString(),new ProcessInfo( Process.GetProcessById(calcID))); 
+            return new WindowInfo(handle, winHeader.ToString(), winClassName.ToString(), new ProcessInfo(Process.GetProcessById(calcID)));
         }
 
 
@@ -94,7 +95,70 @@ namespace ComputerUsage
         {
             return SystemInformation.PowerStatus;
         }
-        
+
+        public static List<PingInfo> GetNetworkStatus()
+        {
+            // var s = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();
+            List<PingInfo> pings = new List<PingInfo>();
+            string[] addresses = Set.PingAddress.Split('|');
+          //  int successfulCount = 0;
+            Parallel.ForEach(addresses, p =>
+            {
+                pings.Add(new PingInfo(p, PingNetAddress(p)));
+            }
+            );
+            return pings;
+            //if(successfulCount==addresses.Length)
+            //{
+            //    return NetworkStatus.All;
+            //}
+            //if(successfulCount==0)
+            //{
+            //    return NetworkStatus.None;
+            //}
+            //return NetworkStatus.Some;
+        }
+
+        //public enum NetworkStatus
+        //{
+        //    All,
+        //    Some,
+        //    None,
+        //    Unknow
+        //}
+
+        private static int PingNetAddress(string strNetAdd)
+        {
+            bool Flage = false;
+            Ping ping = new Ping();
+            try
+            {
+                PingReply pr = ping.Send(strNetAdd, 1000);
+                //if (pr.Status == IPStatus.TimedOut)
+                //{
+                //    Flage = false;
+                //}
+                //if (pr.Status == IPStatus.Success)
+                //{
+                //    Flage = true;
+                //}
+                //else
+                //{
+                //    Flage = false;
+                //}
+                if(pr.Status!=IPStatus.Success)
+                {
+                    return -1;
+                }
+                return (int)pr.RoundtripTime;
+            }
+            catch
+            {
+                return -1;
+            }
+            //return Flage;
+        }
+
 
         private static void SystemEventsPowerModeChangedEventHandler(object sender, PowerModeChangedEventArgs e)
         {
@@ -107,7 +171,7 @@ namespace ComputerUsage
                 case PowerModes.StatusChange:
 
                     var status = GetBatteryStatus();
-                    if (status.PowerLineStatus == PowerLineStatus.Online )
+                    if (status.PowerLineStatus == PowerLineStatus.Online)
                     {
                         if (xml.LastEvent != "接上电源")
                         {
@@ -194,7 +258,7 @@ namespace ComputerUsage
         {
             bool flag = false;
             Point currentPosition = GetCursorPosition();
-            if(currentPosition!=lastPosition)
+            if (currentPosition != lastPosition)
             {
                 flag = true;
             }

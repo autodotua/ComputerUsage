@@ -25,6 +25,10 @@ namespace ComputerUsage
             {
                 battery = new BatteryInfo(GetBatteryStatus());
             }
+            if(Set.IncludeNetwork)
+            {
+                pingInfos = GetNetworkStatus();
+            }
             foregroundWindow = GetForegroundWindowInfo();
             mouseMoved = MouseMoved();
 
@@ -35,7 +39,8 @@ namespace ComputerUsage
            IEnumerable<WindowInfo> windows,
             BatteryInfo battery,
             WindowInfo foregroundWindow,
-            bool mouseMoved)
+            bool mouseMoved,
+          List<  PingInfo> network)
         {
             this.time = time;
             if (processes != null)
@@ -49,6 +54,7 @@ namespace ComputerUsage
             this.battery = battery;
             this.foregroundWindow = foregroundWindow;
             this.mouseMoved = mouseMoved;
+            this.pingInfos = network;
         }
 
         public DateTime time;
@@ -99,6 +105,47 @@ namespace ComputerUsage
 
         public bool mouseMoved;
         public string DisplayMouseMoved => mouseMoved ? "●" : "";
-        
+
+        // public NetworkStatus network = NetworkStatus.Unknow;
+
+        public List<PingInfo> pingInfos;
+
+        public string DisplayNetworkStatus
+        {
+            //get
+            //{
+            //    switch(network)
+            //    {
+            //        case NetworkStatus.All:
+            //            return "完全连接";
+            //        case NetworkStatus.None:
+            //            return "无连接";
+            //        case NetworkStatus.Some:
+            //            return "部分连接";
+            //        default:
+            //            return "未知";
+            //    }
+
+            get
+            {
+                if(pingInfos.Count==0)
+                {
+                    return "未知";
+                }
+                if(pingInfos.Any(p=>p.time==-1))
+                {
+                    if(pingInfos.Any(p=>p.time!=-1))
+                    {
+                        return "部分连接";
+                    }
+                    else
+                    {
+                        return "无连接";
+                    }
+                }
+                return "完全连接";
+            }
+            
+        }
     }
 }

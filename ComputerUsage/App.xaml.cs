@@ -62,6 +62,7 @@ namespace ComputerUsage
             {
                 startup = true;
             }
+            //ComputerDatas.GetNetworkStatus();
             background = new BackgroundWork();
             //await background.TimerTickEventHandler();
             void newWindow()

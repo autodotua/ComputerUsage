@@ -12,7 +12,7 @@ namespace ComputerUsage
 {
     public class XmlHelper
     {
-        XmlDocument xml = new XmlDocument();
+        XmlDocument xml;
         XmlElement root;
 
         string xmlPath;
@@ -20,6 +20,9 @@ namespace ComputerUsage
         public XmlHelper()
         {
             xmlPath = ConfigDirectory + "\\history.xml";
+
+            reLoad:
+             xml = new XmlDocument();
             if (!File.Exists(xmlPath))
             {
                 Directory.CreateDirectory(ConfigDirectory);
@@ -37,12 +40,41 @@ namespace ComputerUsage
                 }
                 catch (Exception ex)
                 {
-                    if(WpfControls.Dialog.DialogHelper.ShowMessage("加载XML失败：" + ex.Message + Environment.NewLine + "是否打开配置文件夹进行检查？", WpfControls.Dialog.DialogType.Error, System.Windows.MessageBoxButton.YesNo)==0)
+                    int result = WpfControls.Dialog.DialogHelper.ShowMessage("加载XML失败：" + ex.Message + Environment.NewLine + "请选择操作",
+                        WpfControls.Dialog.DialogType.Error,new string[] { "打开目录手动恢复并退出", "尝试恢复上一次的备份", "清空历史文件", "退出" });
+                    if(result==0)
                     {
                         Process.Start(ConfigDirectory);
+                        App.Current.Shutdown();
                     }
-                    App.Current.Shutdown();
-
+                    else if(result==1)
+                    {
+                        if(!File.Exists(ConfigDirectory+"\\history.bak"))
+                        {
+                            WpfControls.Dialog.DialogHelper.ShowError("备份文件不存在！");
+                            App.Current.Shutdown();
+                        }
+                        else
+                        {
+                            if(File.Exists(xmlPath))
+                            {
+                                File.Delete(xmlPath);
+                            }
+                            File.Move(ConfigDirectory + "\\history.bak",xmlPath);
+                            File.Delete(ConfigDirectory + "\\history.bak");
+                            WpfControls.Dialog.DialogHelper.ShowPrompt("已尝试恢复历史文件，将重试");
+                            goto reLoad;
+                        }
+                    }
+                    else if(result==2)
+                    {
+                        File.Delete(xmlPath);
+                        goto reLoad;
+                    }
+                    else
+                    {
+                        App.Current.Shutdown();
+                    }
 
                 }
                 root = xml.LastChild as XmlElement;
@@ -124,6 +156,7 @@ namespace ComputerUsage
                 XmlElement batteryElement = null;
                 XmlElement processElements = null;
                 XmlElement foregroundWindowElement = null;
+                XmlElement networkElement = null;
                 foreach (XmlElement child in element.ChildNodes)
                 {
                     switch (child.Name)
@@ -140,6 +173,9 @@ namespace ComputerUsage
                             break;
                         case "ForegroundWindow":
                             foregroundWindowElement = child;
+                            break;
+                        case "NetworkStatus":
+                            networkElement = child;
                             break;
                     }
                 }
@@ -180,7 +216,28 @@ namespace ComputerUsage
                 {
                     mouseMoved = bool.Parse(element.GetAttribute("MouseMoved"));
                 }
-                DataInfo history = new DataInfo(time, pros, wins, battery, foreground, mouseMoved);
+                //ComputerDatas.NetworkStatus net = ComputerDatas.NetworkStatus.Unknow;
+                List<PingInfo> pings = new List<PingInfo>();
+                if(networkElement!=null)
+                {
+                    foreach (XmlElement child in networkElement)
+                    {
+                        pings.Add(new PingInfo(child.GetAttribute("Address"),int.Parse(child.GetAttribute("Time"))));
+                    }
+                //    switch(networkElement.GetAttribute("NetworkStatus"))
+                //    {
+                //        case "完全连接":
+                //            net = ComputerDatas.NetworkStatus.All;
+                //            break;
+                //        case "部分连接":
+                //            net = ComputerDatas.NetworkStatus.Some;
+                //            break;
+                //        case "无连接":
+                //            net = ComputerDatas.NetworkStatus.None;
+                //            break;
+                //    }
+                }
+                DataInfo history = new DataInfo(time, pros, wins, battery, foreground, mouseMoved,pings);
                 infos.Add(history);
 
                 current++;
@@ -261,10 +318,24 @@ namespace ComputerUsage
             {
                 element.AppendChild(GetProcessXml(info.processes));
             }
+            if (info.pingInfos != null)
+            {
+                element.AppendChild(GetNetworkXml(info.pingInfos));
+            }
             element.AppendChild(GetWindowXml(info.foregroundWindow));
             element.SetAttribute("MouseMoved", info.mouseMoved.ToString());
+           // element.SetAttribute("NetworkStatus",info.DisplayNetwork);
             root.AppendChild(element);
 
+            
+            if(File.Exists(xmlPath))
+            {
+                if(File.Exists(ConfigDirectory + "\\history.bak"))
+                {
+                    File.Delete(ConfigDirectory + "\\history.bak");
+                }
+                File.Copy(xmlPath, ConfigDirectory + "\\history.bak");
+            }
             xml.Save(xmlPath);
         }
 
@@ -276,8 +347,7 @@ namespace ComputerUsage
             return element;
         }
 
-
-        private XmlElement GetWindowXml(WindowInfo[] wins)
+        private XmlElement GetWindowXml(IEnumerable< WindowInfo> wins)
         {
             XmlElement element = xml.CreateElement("Windows");
             foreach (var win in wins)
@@ -304,7 +374,18 @@ namespace ComputerUsage
             element.AppendChild(processElement);
             return element;
         }
-
+        private XmlElement GetNetworkXml(IEnumerable<PingInfo> pings)
+        {
+            XmlElement element = xml.CreateElement("NetworkStatus");
+            foreach (var ping in pings)
+            {
+                XmlElement child = xml.CreateElement("Ping");
+                child.SetAttribute("Address", ping.Address);
+                child.SetAttribute("Time", ping.time.ToString());
+                element.AppendChild(child);
+            }
+            return element;
+        }
         private XmlElement GetProcessXml(ProcessInfo[] processes)
         {
             XmlElement element = xml.CreateElement("Processes");
@@ -322,6 +403,7 @@ namespace ComputerUsage
             }
             return element;
         }
+
         private XmlElement GetProcessXml(ProcessInfo process)
         {
 

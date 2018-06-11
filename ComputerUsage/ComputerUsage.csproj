@@ -74,6 +74,7 @@
     <Compile Include="InfoClasses\BatteryInfo.cs" />
     <Compile Include="InfoClasses\DataInfo.cs" />
     <Compile Include="InfoClasses\EventInfo.cs" />
+    <Compile Include="InfoClasses\PingInfo.cs" />
     <Compile Include="InfoClasses\SystemInfo.cs" />
     <Compile Include="Tools\BackgroundWork.cs" />
     <Compile Include="Tools\Settings.cs" />

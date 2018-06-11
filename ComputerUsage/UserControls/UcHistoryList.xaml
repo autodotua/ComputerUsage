@@ -87,7 +87,16 @@ Loaded="LoadedEventHandler"
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-
+                        <GridViewColumn Header="网络状态" Width="96">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <flat:Button
+                                    Content="{Binding DisplayNetworkStatus}"
+                                    Tag="{Binding Time,Mode=OneTime,Converter={StaticResource converter},ConverterParameter=networkStatus}"
+                                    Click="ButtonsClickEventHandler"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
 
                         <GridViewColumn Header="电池" Width="64">
                             <GridViewColumn.CellTemplate>
