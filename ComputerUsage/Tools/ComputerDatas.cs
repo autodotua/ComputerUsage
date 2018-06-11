@@ -101,10 +101,11 @@ namespace ComputerUsage
             // var s = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();
             List<PingInfo> pings = new List<PingInfo>();
             string[] addresses = Set.PingAddress.Split('|');
-          //  int successfulCount = 0;
+            //  int successfulCount = 0;
             Parallel.ForEach(addresses, p =>
             {
-                pings.Add(new PingInfo(p, PingNetAddress(p)));
+                PingNetAddress(p, out int time, out IPStatus result);
+                pings.Add(new PingInfo(p, time, result));
             }
             );
             return pings;
@@ -127,10 +128,11 @@ namespace ComputerUsage
         //    Unknow
         //}
 
-        private static int PingNetAddress(string strNetAdd)
+        private static void PingNetAddress(string strNetAdd, out int time, out IPStatus result)
         {
             bool Flage = false;
             Ping ping = new Ping();
+            result = IPStatus.Unknown;
             try
             {
                 PingReply pr = ping.Send(strNetAdd, 1000);
@@ -146,15 +148,19 @@ namespace ComputerUsage
                 //{
                 //    Flage = false;
                 //}
-                if(pr.Status!=IPStatus.Success)
+                result = pr.Status;
+                if (result != IPStatus.Success)
                 {
-                    return -1;
+                    time = -1;
                 }
-                return (int)pr.RoundtripTime;
+                else
+                {
+                    time = (int)pr.RoundtripTime;
+                }
             }
             catch
             {
-                return -1;
+                time = -1;
             }
             //return Flage;
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -222,7 +223,7 @@ namespace ComputerUsage
                 {
                     foreach (XmlElement child in networkElement)
                     {
-                        pings.Add(new PingInfo(child.GetAttribute("Address"),int.Parse(child.GetAttribute("Time"))));
+                        pings.Add(new PingInfo(child.GetAttribute("Address"),int.Parse(child.GetAttribute("Time")),child.HasAttribute("Result")?((IPStatus)Enum.Parse(typeof(IPStatus), child.GetAttribute("Result"))):IPStatus.Unknown));
                     }
                 //    switch(networkElement.GetAttribute("NetworkStatus"))
                 //    {
@@ -382,6 +383,8 @@ namespace ComputerUsage
                 XmlElement child = xml.CreateElement("Ping");
                 child.SetAttribute("Address", ping.Address);
                 child.SetAttribute("Time", ping.time.ToString());
+                child.SetAttribute("Result", ping.result.ToString());
+
                 element.AppendChild(child);
             }
             return element;

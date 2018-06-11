@@ -78,6 +78,9 @@
     <Compile Include="InfoClasses\SystemInfo.cs" />
     <Compile Include="Tools\BackgroundWork.cs" />
     <Compile Include="Tools\Settings.cs" />
+    <Compile Include="UserControls\PgNetworkDetail.xaml.cs">
+      <DependentUpon>PgNetworkDetail.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\PgWindowsDetail.xaml.cs">
       <DependentUpon>PgWindowsDetail.xaml</DependentUpon>
     </Compile>
@@ -102,6 +105,10 @@
     </Compile>
     <Compile Include="InfoClasses\WindowInfo.cs" />
     <Compile Include="Tools\XmlHelper.cs" />
+    <Page Include="UserControls\PgNetworkDetail.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UserControls\PgWindowsDetail.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

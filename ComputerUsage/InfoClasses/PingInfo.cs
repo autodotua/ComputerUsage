@@ -14,11 +14,16 @@ namespace ComputerUsage
 
 
 
-        public PingInfo(string address, int time)
+        public PingInfo(string address, int time, System.Net.NetworkInformation.IPStatus result)
         {
             this.address = address;
             this.time = time;
+            this.result = result;
         }
+
+        public System.Net.NetworkInformation.IPStatus result;
+
+        public string DisplayResult => result == System.Net.NetworkInformation.IPStatus.Success ? "成功" : "失败：" + result.ToString();
 
         public string DisplayTime => time.ToString();
 

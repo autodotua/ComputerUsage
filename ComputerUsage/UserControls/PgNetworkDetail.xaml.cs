@@ -20,18 +20,22 @@ namespace ComputerUsage
     /// <summary>
     /// WinProcessesDetail.xaml 的交互逻辑
     /// </summary>
-    public partial class PgNetworkDetail : Page
+    public partial class PgWindowsDetail : Page
     {
-        ObservableCollection<PingInfo> pingInfos;
-        public PgNetworkDetail(IEnumerable<PingInfo> pings)
+        ObservableCollection<WindowInfo> windowInfos;
+        public PgWindowsDetail(WindowInfo[] wins)
         {
             InitializeComponent();
             lvw.CloseTriggers();
-            pingInfos = new ObservableCollection<PingInfo>(pings);
-            lvw.ItemsSource = pingInfos;
+            windowInfos = new ObservableCollection<WindowInfo>(wins);
+            lvw.ItemsSource = windowInfos;
         }
 
-
+        private void ButtonsClickEventHandler(object sender, RoutedEventArgs e)
+        {
+            ProcessInfo info = windowInfos.FirstOrDefault(p => p.DisplayHandle.Equals((sender as Button).Tag)).process;
+            (App.Current.MainWindow as MainWindow).ucHistoryList.frm.Content = new PgProcessesDetail(new ProcessInfo[] { info });
+        }
     }
 
 }

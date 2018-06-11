@@ -131,6 +131,12 @@ namespace ComputerUsage
                             page = new PgWindowsDetail(new WindowInfo[] { info.foregroundWindow });
                         }
                         break;
+                    case "networkStatus":
+                        if(info.pingInfos!=null)
+                        {
+                            page = new PgNetworkDetail(info.pingInfos);
+                        }
+                        break;
                 }
 
                 if (page != null)
