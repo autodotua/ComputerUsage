@@ -22,6 +22,14 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="8"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="8"/>
             <RowDefinition Height="Auto"/>
 
@@ -33,6 +41,7 @@
             <flat:CheckBox x:Name="chkProcesses" Margin="0,2">正在运行的进程</flat:CheckBox>
             <flat:CheckBox x:Name="chkWindows" Margin="0,2">窗口</flat:CheckBox>
             <flat:CheckBox x:Name="chkBattery" Margin="0,2">电池信息</flat:CheckBox>
+            <flat:CheckBox x:Name="chkNetwork" Margin="0,2">网络连接清空</flat:CheckBox>
         </StackPanel>
         <TextBlock Grid.Row="4">历史纪录表格每页最多显示的项目数量：</TextBlock>
         <flat:HorizontalSlider x:Name="sldItemsCountOfEachPage" Minimum="5" Maximum="1000" TextWidth="48" Grid.Column="2" Grid.Row="4"/>
@@ -45,11 +54,18 @@
 
         </flat:UneditableComboBox>
 
-
+        <TextBlock Grid.Row="8">网络连接检测网址：</TextBlock>
+        <flat:TextBox Grid.Row="8" Grid.Column="2" x:Name="txtNetAddresses" AcceptsReturn="True" MaxHeight="96"/>
+        <TextBlock Grid.Row="10">网络连接超时：</TextBlock>
+        <flat:HorizontalSlider x:Name="sldNetTimeOut" Minimum="1" Maximum="10000" TextWidth="72" Grid.Column="2" Grid.Row="10"/>
+        <TextBlock Grid.Row="12">备份最大数量：</TextBlock>
+        <flat:HorizontalSlider x:Name="sldBackupCount" Minimum="2" Maximum="100" TextWidth="72" Grid.Column="2" Grid.Row="12"/>
+        <TextBlock Grid.Row="14">备份时间间隔：</TextBlock>
+        <flat:HorizontalSlider x:Name="sldBackupInterval" Minimum="5" Maximum="120" TextWidth="72" Grid.Column="2" Grid.Row="14"/>
 
         <StackPanel Grid.Column="2" Grid.Row="100" HorizontalAlignment="Right" Orientation="Horizontal">
-            <flat:Button x:Name="btnReInitialize" Margin="8,0" Click="Button_Click">恢复</flat:Button>
-            <flat:Button x:Name="btnOk" Margin="8,0" Click="Button_Click">保存</flat:Button>
+            <flat:Button x:Name="btnReInitialize" DisableTimeAfterClicking="1000" Margin="8,0" Click="Button_Click">恢复</flat:Button>
+            <flat:Button x:Name="btnOk" DisableTimeAfterClicking="1000" Margin="8,0" Click="Button_Click">保存</flat:Button>
         </StackPanel>
     </Grid>
 </UserControl>

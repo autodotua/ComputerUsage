@@ -100,7 +100,7 @@ namespace ComputerUsage
         {
             // var s = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();
             List<PingInfo> pings = new List<PingInfo>();
-            string[] addresses = Set.PingAddress.Split('|');
+            string[] addresses = Set.PingAddress.Split(new string[] { Environment.NewLine },StringSplitOptions.RemoveEmptyEntries);
             //  int successfulCount = 0;
             Parallel.ForEach(addresses, p =>
             {
@@ -135,7 +135,7 @@ namespace ComputerUsage
             result = IPStatus.Unknown;
             try
             {
-                PingReply pr = ping.Send(strNetAdd, 1000);
+                PingReply pr = ping.Send(strNetAdd, Set.PingTimeOut);
                 //if (pr.Status == IPStatus.TimedOut)
                 //{
                 //    Flage = false;

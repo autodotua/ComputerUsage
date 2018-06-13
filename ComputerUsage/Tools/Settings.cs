@@ -20,6 +20,7 @@ namespace ComputerUsage
         public int BackupInterval { get; set; } = 60;
         public int BackupCount { get; set; } = 10;
 
-        public string PingAddress = "www.baidu.com|www.google.com|www.qq.com";
+        public string PingAddress { get; set; } = "www.baidu.com"+Environment.NewLine+"www.google.com"+Environment.NewLine+"www.qq.com";
+        public int PingTimeOut { get; set; } = 1000;
     }
 }

@@ -26,7 +26,11 @@ namespace ComputerUsage
             InitializeComponent();
             sldInterval.TextConvert = p => p.ToString() + "秒";
             sldItemsCountOfEachPage.TextConvert = p => ((int)p).ToString() + "条";
-            if(WpfCodes.Program.Startup.WillRunWhenStartup("ComputerUsage"))
+            sldNetTimeOut.TextConvert = p => ((int)p).ToString() + "毫秒";
+            sldBackupCount.TextConvert = p => ((int)p).ToString() + "个";
+
+            sldBackupInterval.TextConvert = p => ((int)p).ToString() + "分";
+            if (WpfCodes.Program.Startup.WillRunWhenStartup("ComputerUsage"))
             {
                 if(Set.NoWindowWhenStartup)
                 {
@@ -50,9 +54,15 @@ namespace ComputerUsage
             chkBattery.IsChecked = Set.IncludeBattery;
             chkProcesses.IsChecked = Set.IncludeProcesses;
             chkWindows.IsChecked = Set.IncludeWindows;
+            chkNetwork.IsChecked = Set.IncludeNetwork;
+            txtNetAddresses .Text= Set.PingAddress;
+            sldNetTimeOut.Value = Set.TimerInterval;
+            sldBackupCount.Value = Set.BackupCount;
+            sldBackupInterval.Value = Set.BackupInterval;
+            
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             Button btn = sender as Button;
             if (btn == btnReInitialize)
@@ -66,6 +76,12 @@ namespace ComputerUsage
                 Set.IncludeBattery = chkBattery.IsChecked.Value;
                 Set.IncludeProcesses = chkProcesses.IsChecked.Value;
                 Set.IncludeWindows = chkWindows.IsChecked.Value;
+                Set.IncludeNetwork = chkNetwork.IsChecked.Value;
+                Set.PingAddress = txtNetAddresses.Text;
+                Set.TimerInterval = (int)sldNetTimeOut.Value;
+                Set.BackupCount = (int)sldBackupCount.Value;
+                Set.BackupInterval = (int)sldBackupInterval.Value;
+
                 if(cbbStartUp.SelectedIndex==0)
                 {
                     WpfCodes.Program.Startup.CancelRunWhenStartup("ComputerUsage");
@@ -85,10 +101,7 @@ namespace ComputerUsage
                     }
                 }
                 SaveSettings();
-
-                btn.IsEnabled = false;
-                await Task.Delay(1000);
-                btn.IsEnabled = true;
+                
             }
         }
     }

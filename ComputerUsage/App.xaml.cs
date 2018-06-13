@@ -1,4 +1,4 @@
-﻿#define DEBUG
+﻿//#define DEBUG
 
 using Microsoft.Win32;
 using System;
@@ -27,31 +27,39 @@ namespace ComputerUsage
         public App()
         {
 
-#if (!DEBUG)
+
             if (WpfCodes.Program.Startup.HaveAnotherInstance("ComputerUsage"))
             {
                 WpfControls.Dialog.DialogHelper.ShowError("已存在另一实例，请不要重复运行！");
                 Environment.Exit(0);
                 return;
             }
-#endif
+            TaskScheduler.UnobservedTaskException += (p1, p2) => { if (!p2.Observed) ShowException(p2.Exception); };//Task
+            AppDomain.CurrentDomain.UnhandledException += (p1, p2) => ShowException((Exception)p2.ExceptionObject);//UI
+            DispatcherUnhandledException += (p1, p2) => ShowException(p2.Exception);//Thread
 
-            DispatcherUnhandledException += UnhandledExceptionEventHandler;
+
         }
 
-        private void UnhandledExceptionEventHandler(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
-        {
-            WpfControls.Dialog.DialogHelper.ShowException("程序发生了未捕获的错误，即将退出", e.Exception);
 
+
+
+        private void ShowException(Exception ex)
+        {
             try
             {
-                File.AppendAllText("Exception.log", Environment.NewLine + Environment.NewLine + DateTime.Now.ToString() + Environment.NewLine + e.Exception.ToString());
-            }
-            catch(Exception ex)
-            {
-                WpfControls.Dialog.DialogHelper.ShowException("错误信息无法写入", ex);
-            }
+                Dispatcher.Invoke(() => WpfControls.Dialog.DialogHelper.ShowException("程序发生了未捕获的错误", ex));
 
+                File.AppendAllText("Exception.log", Environment.NewLine + Environment.NewLine + DateTime.Now.ToString() + Environment.NewLine + ex.ToString());
+            }
+            catch (Exception ex2)
+            {
+                Dispatcher.Invoke(() => WpfControls.Dialog.DialogHelper.ShowException("错误信息无法写入", ex2));
+            }
+            finally
+            {
+                App.Current.Shutdown();
+            }
         }
 
         private void ApplicationStartupEventHandler(object sender, StartupEventArgs e)
@@ -93,13 +101,13 @@ namespace ComputerUsage
                 string value = File.ReadAllText("config.ini");
                 if (value == "here")
                 {
-                    value= AppDomain.CurrentDomain.BaseDirectory + "Config";
+                    value = AppDomain.CurrentDomain.BaseDirectory + "Config";
                 }
-              
-                    ConfigDirectory = value;
-                
-                 if (!Directory.Exists(value))
-                
+
+                ConfigDirectory = value;
+
+                if (!Directory.Exists(value))
+
                 {
                     try
                     {
