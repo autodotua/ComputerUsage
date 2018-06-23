@@ -15,10 +15,11 @@ namespace ComputerUsage
 
         public BackgroundWork()
         {
-            mainTimer = new Timer(new TimerCallback(/*async*/ p =>/*await*/ TimerTickEventHandler()),this,0,Set.TimerInterval*1000);
+            mainTimer = new Timer(new TimerCallback(/*async*/ p =>/*await*/ Record()),this,0,Set.TimerInterval*1000);
         }
         private DateTime lastBackupTime = DateTime.MinValue;
-        public /*async*/ void TimerTickEventHandler()
+
+        public /*async*/ void Record()
         {
             DataInfo info = null;
             //await Task.Run(() =>

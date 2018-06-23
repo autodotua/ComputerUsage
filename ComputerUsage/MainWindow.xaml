@@ -81,6 +81,9 @@
         <TabItem Header="历史表格">
             <local:UcHistoryList x:Name="ucHistoryList"/>
         </TabItem>
+        <TabItem x:Name="tabClipboard" Header="剪贴板" Selector.Selected="TabItem_Selected">
+            <local:UcClipboardList x:Name="ucClipboard"/>
+        </TabItem>
         <TabItem x:Name="tabBlock" Header="图表" Selector.Selected="TabItem_Selected">
             <Grid x:Name="grdChart">
                 <Grid.ColumnDefinitions>

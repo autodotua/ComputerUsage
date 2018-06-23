@@ -56,7 +56,7 @@ namespace ComputerUsage
             chkWindows.IsChecked = Set.IncludeWindows;
             chkNetwork.IsChecked = Set.IncludeNetwork;
             txtNetAddresses .Text= Set.PingAddress;
-            sldNetTimeOut.Value = Set.TimerInterval;
+            sldNetTimeOut.Value = Set.PingTimeOut;
             sldBackupCount.Value = Set.BackupCount;
             sldBackupInterval.Value = Set.BackupInterval;
             
@@ -78,7 +78,7 @@ namespace ComputerUsage
                 Set.IncludeWindows = chkWindows.IsChecked.Value;
                 Set.IncludeNetwork = chkNetwork.IsChecked.Value;
                 Set.PingAddress = txtNetAddresses.Text;
-                Set.TimerInterval = (int)sldNetTimeOut.Value;
+                Set.PingTimeOut = (int)sldNetTimeOut.Value;
                 Set.BackupCount = (int)sldBackupCount.Value;
                 Set.BackupInterval = (int)sldBackupInterval.Value;
 

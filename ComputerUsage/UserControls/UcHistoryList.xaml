@@ -38,7 +38,11 @@ Loaded="LoadedEventHandler"
                 <ComboBoxItem>记录</ComboBoxItem>
                 <ComboBoxItem>事件</ComboBoxItem>
             </flat:UneditableComboBox>
-            <flat:Button x:Name="btnLoad" HorizontalAlignment="Right" Click="ButtonsClickEventHandler">刷新</flat:Button>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <flat:Button x:Name="btnRecord" Margin="0,0,4,0"  Click="ButtonsClickEventHandler">立即记录</flat:Button>
+                <flat:Button x:Name="btnLoad"  Click="ButtonsClickEventHandler">刷新列表</flat:Button>
+
+            </StackPanel>
             <!--<Grid >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>

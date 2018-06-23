@@ -23,7 +23,7 @@ namespace ComputerUsage
             xmlPath = ConfigDirectory + "\\history.xml";
 
             reLoad:
-             xml = new XmlDocument();
+            xml = new XmlDocument();
             if (!File.Exists(xmlPath))
             {
                 Directory.CreateDirectory(ConfigDirectory);
@@ -31,7 +31,7 @@ namespace ComputerUsage
                 xml.AppendChild(xdec);
                 root = xml.CreateElement("ComputerUsage");
                 xml.AppendChild(root);
-                xml.Save(xmlPath);
+               Save();
             }
             else
             {
@@ -42,32 +42,66 @@ namespace ComputerUsage
                 catch (Exception ex)
                 {
                     int result = WpfControls.Dialog.DialogHelper.ShowMessage("加载XML失败：" + ex.Message + Environment.NewLine + "请选择操作",
-                        WpfControls.Dialog.DialogType.Error,new string[] { "打开目录手动恢复并退出", "尝试恢复上一次的备份", "清空历史文件", "退出" });
-                    if(result==0)
+                        WpfControls.Dialog.DialogType.Error, new string[] { "打开目录手动恢复并退出", "尝试恢复上一次的备份", "清空历史文件", "退出" });
+                    if (result == 0)
                     {
                         Process.Start(ConfigDirectory);
                         App.Current.Shutdown();
                     }
-                    else if(result==1)
+                    else if (result == 1)
                     {
-                        if(!File.Exists(ConfigDirectory+"\\history.bak"))
+                        string directory = ConfigDirectory + "\\HistoryBackup";
+                        if (!Directory.Exists(directory))
                         {
                             WpfControls.Dialog.DialogHelper.ShowError("备份文件不存在！");
                             App.Current.Shutdown();
+
                         }
                         else
                         {
-                            if(File.Exists(xmlPath))
+                            List<FileInfo> existingFile = Directory.EnumerateFiles(directory).Select(p => new FileInfo(p)).Where(p => p.Name.StartsWith("Backup") && p.Extension == ".xml").OrderByDescending(p => p.CreationTime).ToList();
+                            if (existingFile.Count == 0)
+                            {
+                                WpfControls.Dialog.DialogHelper.ShowError("备份文件不存在！");
+                                App.Current.Shutdown();
+                            }
+
+
+                            if (File.Exists(xmlPath))
                             {
                                 File.Delete(xmlPath);
                             }
-                            File.Move(ConfigDirectory + "\\history.bak",xmlPath);
-                            File.Delete(ConfigDirectory + "\\history.bak");
+                            try
+                            {
+                                existingFile[0].CopyTo(xmlPath);
+                            }
+                            catch (Exception ex2)
+                            {
+                                WpfControls.Dialog.DialogHelper.ShowException("复制备份文件出错", ex2);
+                                App.Current.Shutdown();
+                            }
                             WpfControls.Dialog.DialogHelper.ShowPrompt("已尝试恢复历史文件，将重试");
                             goto reLoad;
                         }
+
+                        //if (!File.Exists(ConfigDirectory+"\\history.bak"))
+                        //{
+                        //    WpfControls.Dialog.DialogHelper.ShowError("备份文件不存在！");
+                        //    App.Current.Shutdown();
+                        //}
+                        //else
+                        //{
+                        //    if(File.Exists(xmlPath))
+                        //    {
+                        //        File.Delete(xmlPath);
+                        //    }
+                        //    File.Move(ConfigDirectory + "\\history.bak",xmlPath);
+                        //    File.Delete(ConfigDirectory + "\\history.bak");
+                        //    WpfControls.Dialog.DialogHelper.ShowPrompt("已尝试恢复历史文件，将重试");
+                        //    goto reLoad;
+                        //}
                     }
-                    else if(result==2)
+                    else if (result == 2)
                     {
                         File.Delete(xmlPath);
                         goto reLoad;
@@ -96,7 +130,7 @@ namespace ComputerUsage
             element.SetAttribute("Time", DateTime.Now.ToString());
             element.SetAttribute("Type", "程序关闭");
             root.AppendChild(element);
-            xml.Save(xmlPath);
+           Save();
         }
 
         public void WriteStart()
@@ -112,7 +146,7 @@ namespace ComputerUsage
                 element.SetAttribute("Type", "程序启动");
             }
             root.AppendChild(element);
-            xml.Save(xmlPath);
+           Save();
         }
 
         public void Write(string @event)
@@ -122,7 +156,7 @@ namespace ComputerUsage
             element.SetAttribute("Type", @event);
             LastEvent = @event;
             root.AppendChild(element);
-            xml.Save(xmlPath);
+           Save();
         }
         public string LastEvent { get; set; }
         public int Count => root.ChildNodes.Count;
@@ -219,26 +253,26 @@ namespace ComputerUsage
                 }
                 //ComputerDatas.NetworkStatus net = ComputerDatas.NetworkStatus.Unknow;
                 List<PingInfo> pings = new List<PingInfo>();
-                if(networkElement!=null)
+                if (networkElement != null)
                 {
                     foreach (XmlElement child in networkElement)
                     {
-                        pings.Add(new PingInfo(child.GetAttribute("Address"),int.Parse(child.GetAttribute("Time")),child.HasAttribute("Result")?((IPStatus)Enum.Parse(typeof(IPStatus), child.GetAttribute("Result"))):IPStatus.Unknown));
+                        pings.Add(new PingInfo(child.GetAttribute("Address"), int.Parse(child.GetAttribute("Time")), child.HasAttribute("Result") ? ((IPStatus)Enum.Parse(typeof(IPStatus), child.GetAttribute("Result"))) : IPStatus.Unknown));
                     }
-                //    switch(networkElement.GetAttribute("NetworkStatus"))
-                //    {
-                //        case "完全连接":
-                //            net = ComputerDatas.NetworkStatus.All;
-                //            break;
-                //        case "部分连接":
-                //            net = ComputerDatas.NetworkStatus.Some;
-                //            break;
-                //        case "无连接":
-                //            net = ComputerDatas.NetworkStatus.None;
-                //            break;
-                //    }
+                    //    switch(networkElement.GetAttribute("NetworkStatus"))
+                    //    {
+                    //        case "完全连接":
+                    //            net = ComputerDatas.NetworkStatus.All;
+                    //            break;
+                    //        case "部分连接":
+                    //            net = ComputerDatas.NetworkStatus.Some;
+                    //            break;
+                    //        case "无连接":
+                    //            net = ComputerDatas.NetworkStatus.None;
+                    //            break;
+                    //    }
                 }
-                DataInfo history = new DataInfo(time, pros, wins, battery, foreground, mouseMoved,pings);
+                DataInfo history = new DataInfo(time, pros, wins, battery, foreground, mouseMoved, pings);
                 infos.Add(history);
 
                 current++;
@@ -325,21 +359,39 @@ namespace ComputerUsage
             }
             element.AppendChild(GetWindowXml(info.foregroundWindow));
             element.SetAttribute("MouseMoved", info.mouseMoved.ToString());
-           // element.SetAttribute("NetworkStatus",info.DisplayNetwork);
+            // element.SetAttribute("NetworkStatus",info.DisplayNetwork);
             root.AppendChild(element);
 
-            
-            if(File.Exists(xmlPath))
-            {
-                if(File.Exists(ConfigDirectory + "\\history.bak"))
-                {
-                    File.Delete(ConfigDirectory + "\\history.bak");
-                }
-                File.Copy(xmlPath, ConfigDirectory + "\\history.bak");
-            }
-            xml.Save(xmlPath);
+
+            //if(File.Exists(xmlPath))
+            //{
+            //    if(File.Exists(ConfigDirectory + "\\history.bak"))
+            //    {
+            //        File.Delete(ConfigDirectory + "\\history.bak");
+            //    }
+            //    File.Copy(xmlPath, ConfigDirectory + "\\history.bak");
+            //}
+            Save();
         }
 
+        int saveFailedTimes = 0;
+        private void Save()
+        {
+            try
+            {
+                xml.Save(xmlPath);
+                saveFailedTimes = 0;
+            }
+            catch(Exception ex)
+            {
+                saveFailedTimes++;
+                File.AppendAllText("Exception.log", Environment.NewLine + Environment.NewLine + DateTime.Now.ToString() + Environment.NewLine +"文件保存失败"+Environment.NewLine+ ex.ToString());
+                if(saveFailedTimes>5)
+                {
+                    App.Current.Dispatcher.Invoke(() => WpfControls.Dialog.DialogHelper.ShowException("历史文件保存已连续失败五次，请检查错误日志！", ex));
+                }
+            }
+        }
         private XmlElement GetBatteryXml(BatteryInfo battery)
         {
             XmlElement element = xml.CreateElement("Battery");
@@ -348,7 +400,7 @@ namespace ComputerUsage
             return element;
         }
 
-        private XmlElement GetWindowXml(IEnumerable< WindowInfo> wins)
+        private XmlElement GetWindowXml(IEnumerable<WindowInfo> wins)
         {
             XmlElement element = xml.CreateElement("Windows");
             foreach (var win in wins)
@@ -378,15 +430,30 @@ namespace ComputerUsage
         private XmlElement GetNetworkXml(IEnumerable<PingInfo> pings)
         {
             XmlElement element = xml.CreateElement("NetworkStatus");
-            foreach (var ping in pings)
-            {
-                XmlElement child = xml.CreateElement("Ping");
-                child.SetAttribute("Address", ping.Address);
-                child.SetAttribute("Time", ping.time.ToString());
-                child.SetAttribute("Result", ping.result.ToString());
 
-                element.AppendChild(child);
+            try
+            {
+                foreach (var ping in pings)
+                {
+                    if (ping == null)
+                    {
+                        File.AppendAllText("Exception.log", Environment.NewLine + Environment.NewLine + DateTime.Now.ToString() + Environment.NewLine + "ping is null, pings.count=" + pings.Count());
+                        continue;
+                    }
+                    XmlElement child = xml.CreateElement("Ping");
+                    child.SetAttribute("Address", ping.Address);
+                    child.SetAttribute("Time", ping.time.ToString());
+                    child.SetAttribute("Result", ping.result.ToString());
+
+                    element.AppendChild(child);
+                }
+
             }
+            catch(Exception ex)
+            {
+                File.AppendAllText("Exception.log", Environment.NewLine + Environment.NewLine + DateTime.Now.ToString() + Environment.NewLine + "network failed" +Environment.NewLine+ ex.ToString());
+            }
+
             return element;
         }
         private XmlElement GetProcessXml(ProcessInfo[] processes)

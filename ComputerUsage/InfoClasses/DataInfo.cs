@@ -73,9 +73,17 @@ namespace ComputerUsage
             {
                 if (foregroundWindow.name=="")
                 {
+                    if(foregroundWindow.className=="")
+                    {
+                        return "（无标题和类名）";
+                    }
                     return "（" + foregroundWindow.className + "）";
                 }
-                return foregroundWindow.name;
+                if (!foregroundWindow.name.Contains(Environment.NewLine))
+                {
+                    return foregroundWindow.name;
+                }
+                return foregroundWindow.name.Replace(Environment.NewLine, "");
             }
         }
 

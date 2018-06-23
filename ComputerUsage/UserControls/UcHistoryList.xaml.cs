@@ -86,9 +86,10 @@ namespace ComputerUsage
 
             }
         }
-        private void ButtonsClickEventHandler(object sender, RoutedEventArgs e)
+        private async void ButtonsClickEventHandler(object sender, RoutedEventArgs e)
         {
             Button btn = sender as Button;
+            
             if (btn.Name == "btnLastPage")
             {
                 cbbPageSelection.SelectedIndex--;
@@ -102,6 +103,13 @@ namespace ComputerUsage
                 xml.ReloadFields();
                 LoadList();
                 currentPageCount = dataHistoryInfos.Count;
+            }
+            else if( btn.Name== "btnRecord")
+            {
+                BackgroundWork background = (App.Current as App).background;
+                btn.IsEnabled = false;
+                await Task.Run(() => background.Record());
+                btn.IsEnabled = true;
             }
             else//说明是列表中的按钮
             {

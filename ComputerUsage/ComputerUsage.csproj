@@ -37,9 +37,29 @@
   <PropertyGroup>
     <ApplicationIcon>ICON.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="CsvHelper, Version=7.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
-      <HintPath>..\packages\CsvHelper.7.1.0\lib\net45\CsvHelper.dll</HintPath>
+      <HintPath>..\packages\CsvHelper.7.1.1\lib\net45\CsvHelper.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="System" />
@@ -72,11 +92,14 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="InfoClasses\BatteryInfo.cs" />
+    <Compile Include="InfoClasses\ClipboardDetailInfo.cs" />
+    <Compile Include="InfoClasses\ClipboardInfo.cs" />
     <Compile Include="InfoClasses\DataInfo.cs" />
     <Compile Include="InfoClasses\EventInfo.cs" />
     <Compile Include="InfoClasses\PingInfo.cs" />
     <Compile Include="InfoClasses\SystemInfo.cs" />
     <Compile Include="Tools\BackgroundWork.cs" />
+    <Compile Include="Tools\ClipboardHelper.cs" />
     <Compile Include="Tools\Settings.cs" />
     <Compile Include="UserControls\PgNetworkDetail.xaml.cs">
       <DependentUpon>PgNetworkDetail.xaml</DependentUpon>
@@ -96,6 +119,9 @@
     </Compile>
     <Compile Include="UserControls\UcForegroundWindowList.xaml.cs">
       <DependentUpon>UcForegroundWindowList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\UcClipboardList.xaml.cs">
+      <DependentUpon>UcClipboardList.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\UcHistoryList.xaml.cs">
       <DependentUpon>UcHistoryList.xaml</DependentUpon>
@@ -142,6 +168,10 @@
     <Page Include="UserControls\UcForegroundWindowList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\UcClipboardList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\UcHistoryList.xaml">
       <Generator>MSBuild:Compile</Generator>

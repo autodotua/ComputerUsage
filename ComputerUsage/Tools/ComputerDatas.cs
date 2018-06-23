@@ -10,6 +10,8 @@ using Microsoft.Win32;
 using static ComputerUsage.GlobalDatas;
 using System.Drawing;
 using System.Net.NetworkInformation;
+using System.Collections.Concurrent;
+using System.Threading;
 
 namespace ComputerUsage
 {
@@ -99,16 +101,15 @@ namespace ComputerUsage
         public static List<PingInfo> GetNetworkStatus()
         {
             // var s = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();
-            List<PingInfo> pings = new List<PingInfo>();
+            ConcurrentBag<PingInfo> pings = new ConcurrentBag<PingInfo>();
             string[] addresses = Set.PingAddress.Split(new string[] { Environment.NewLine },StringSplitOptions.RemoveEmptyEntries);
             //  int successfulCount = 0;
             Parallel.ForEach(addresses, p =>
             {
                 PingNetAddress(p, out int time, out IPStatus result);
                 pings.Add(new PingInfo(p, time, result));
-            }
-            );
-            return pings;
+            });
+            return pings.ToList();
             //if(successfulCount==addresses.Length)
             //{
             //    return NetworkStatus.All;
@@ -130,7 +131,6 @@ namespace ComputerUsage
 
         private static void PingNetAddress(string strNetAdd, out int time, out IPStatus result)
         {
-            bool Flage = false;
             Ping ping = new Ping();
             result = IPStatus.Unknown;
             try

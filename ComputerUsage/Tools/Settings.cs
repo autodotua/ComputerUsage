@@ -22,5 +22,9 @@ namespace ComputerUsage
 
         public string PingAddress { get; set; } = "www.baidu.com"+Environment.NewLine+"www.google.com"+Environment.NewLine+"www.qq.com";
         public int PingTimeOut { get; set; } = 1000;
+
+        public string ImageFormat { get; set; } ="png";
+        public int ClipboradTimeOut { get; set; } = 10000;
+        public int ClipboardMinInterval { get; set; } = 200;
     }
 }

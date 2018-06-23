@@ -69,6 +69,10 @@ namespace ComputerUsage
             {
                 ucSettings.Initialize();
             }
+            else if(tab==tabClipboard)
+            {
+                ucClipboard.Load();
+            }
         }
 
         private void ChartBtnClickEventHandler(object sender, RoutedEventArgs e)

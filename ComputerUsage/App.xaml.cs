@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -27,17 +28,18 @@ namespace ComputerUsage
         public App()
         {
 
-
+#if !DEBUG
             if (WpfCodes.Program.Startup.HaveAnotherInstance("ComputerUsage"))
             {
                 WpfControls.Dialog.DialogHelper.ShowError("已存在另一实例，请不要重复运行！");
                 Environment.Exit(0);
                 return;
             }
+
             TaskScheduler.UnobservedTaskException += (p1, p2) => { if (!p2.Observed) ShowException(p2.Exception); };//Task
             AppDomain.CurrentDomain.UnhandledException += (p1, p2) => ShowException((Exception)p2.ExceptionObject);//UI
             DispatcherUnhandledException += (p1, p2) => ShowException(p2.Exception);//Thread
-
+#endif
 
         }
 
@@ -92,6 +94,7 @@ namespace ComputerUsage
                 newWindow();
             }
             ComputerDatas.RegistSystemEvents();
+            ClipboardHelper clipBoardHelper = new ClipboardHelper();
         }
 
         private void ConcernConfigPath()
