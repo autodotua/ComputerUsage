@@ -36,7 +36,7 @@ namespace ComputerUsage
         {
             clipboardHistoryInfos.Clear();
             clipboardDetailInfos.Clear();
-            if(!Directory.Exists(ClipboardHelper.ClipboardHistoryPath))
+            if (!Directory.Exists(ClipboardHelper.ClipboardHistoryPath))
             {
                 Directory.CreateDirectory(ClipboardHelper.ClipboardHistoryPath);
                 return;
@@ -71,7 +71,7 @@ namespace ComputerUsage
         private void lvwClipboardHistory_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             clipboardDetailInfos.Clear();
-            if(lvwClipboardHistory.SelectedItem==null)
+            if (lvwClipboardHistory.SelectedItem == null)
             {
                 return;
             }
@@ -139,7 +139,7 @@ namespace ComputerUsage
                 case "文件":
                     WpfControls.FlatStyle.ListBox file = new WpfControls.FlatStyle.ListBox()
                     {
-                        BorderThickness=new Thickness(),
+                        BorderThickness = new Thickness(),
                     };
                     foreach (var line in File.ReadAllLines(info.file.FullName))
                     {
@@ -164,6 +164,15 @@ namespace ComputerUsage
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Process.Start(((sender as Button).Tag as FileInfo).FullName);
+        }
+
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            btnZip.IsEnabled = false;
+            await ClipboardHelper.ZipOldFiles();
+            btnZip.IsEnabled = true;
+            Load();
+
         }
     }
 

@@ -34,10 +34,17 @@ namespace ComputerUsage
             {
                 throw new Exception("空的文件夹");
             }
-
-            if (files.Any(p => p.Name.Contains("Image.")))
+            if (files.Any(p => p.Name == "Text.txt"))
             {
-                overview="[图片]";
+                FileInfo file = files.First(p => p.Name == "Text.txt");
+                char[] buffer = new char[20];
+                var reader = file.OpenText();
+                int count = reader.Read(buffer, 0, 20);
+                overview = new string(buffer, 0, count).Replace(Environment.NewLine, "") + "…";
+            }
+            else if (files.Any(p => p.Name.Contains("Image.")))
+            {
+                overview = "[图片]";
             }
             else if (files.Any(p => p.Name == "Rtf.rtf"))
             {
@@ -45,15 +52,11 @@ namespace ComputerUsage
             }
             else if (files.Any(p => p.Name == "Html.html"))
             {
-                overview= "[网页]";
+                overview = "[网页]";
             }
-            else if (files.Any(p => p.Name == "Text.txt"))
+            else if (files.Any(p => p.Name == "Files.txt"))
             {
-                FileInfo file = files.First(p => p.Name == "Text.txt");
-                char[] buffer = new char[20];
-                var reader = file.OpenText();
-                int count = reader.Read(buffer, 0, 20);
-                overview=new string(buffer, 0, count).Replace(Environment.NewLine, "") + "…";
+                overview = "[文件]";
             }
         }
 

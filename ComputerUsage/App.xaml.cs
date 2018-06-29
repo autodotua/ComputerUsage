@@ -36,9 +36,9 @@ namespace ComputerUsage
                 return;
             }
 
-            TaskScheduler.UnobservedTaskException += (p1, p2) => { if (!p2.Observed) ShowException(p2.Exception); };//Task
-            AppDomain.CurrentDomain.UnhandledException += (p1, p2) => ShowException((Exception)p2.ExceptionObject);//UI
-            DispatcherUnhandledException += (p1, p2) => ShowException(p2.Exception);//Thread
+            TaskScheduler.UnobservedTaskException += (p1, p2) => { if (!p2.Observed) ShowException(p2.Exception,3); };//Task
+            AppDomain.CurrentDomain.UnhandledException += (p1, p2) => ShowException((Exception)p2.ExceptionObject,2);//UI
+            DispatcherUnhandledException += (p1, p2) => ShowException(p2.Exception,1);//Thread
 #endif
 
         }
@@ -46,11 +46,11 @@ namespace ComputerUsage
 
 
 
-        private void ShowException(Exception ex)
+        private void ShowException(Exception ex,int type)
         {
             try
             {
-                Dispatcher.Invoke(() => WpfControls.Dialog.DialogHelper.ShowException("程序发生了未捕获的错误", ex));
+                Dispatcher.Invoke(() => WpfControls.Dialog.DialogHelper.ShowException("程序发生了未捕获的错误，类型"+type.ToString(), ex));
 
                 File.AppendAllText("Exception.log", Environment.NewLine + Environment.NewLine + DateTime.Now.ToString() + Environment.NewLine + ex.ToString());
             }
@@ -77,7 +77,7 @@ namespace ComputerUsage
             //await background.TimerTickEventHandler();
             void newWindow()
             {
-                if (Current.MainWindow == null)
+                if (Current.MainWindow as MainWindow == null)
                 {
                     Current.MainWindow = new MainWindow();
                     Current.MainWindow.Show();
@@ -85,7 +85,9 @@ namespace ComputerUsage
             };
             Dictionary<string, Action> rightMouseClick = new Dictionary<string, Action>
             {
-                {"退出" ,()=>Shutdown() }
+                { "回收",() => GC.Collect() },
+
+                {"退出" ,()=>Shutdown() },
             };
             trayIcon = new TrayIcon(ComputerUsage.Properties.Resources.ICON, "计算机使用情况", newWindow, rightMouseClick);
             trayIcon.Show();

@@ -69,6 +69,7 @@
                     <ColumnDefinition Width="*"/>
 
                 </Grid.ColumnDefinitions>
+                <flat:Button x:Name="btnZip" Click="Button_Click_1">打包</flat:Button>
                 <!--<flat:Button x:Name="btnLastPage" Grid.Column="1" Click="ButtonsClickEventHandler">上一页</flat:Button>
                 <flat:UneditableComboBox x:Name="cbbPageSelection" Grid.Column="3" SelectionChanged="PageSelectionChangedEventHandler"/>
                 <flat:Button x:Name="btnNextPage" Grid.Column="5" Click="ButtonsClickEventHandler">下一页</flat:Button>-->

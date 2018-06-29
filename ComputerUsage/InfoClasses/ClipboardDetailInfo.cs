@@ -39,6 +39,8 @@ namespace ComputerUsage
                         return "文件";
                     case "ContainedDataFormats.txt":
                         return "所有类型";
+                    case "Exception.txt":
+                        return "错误";
                     default:
                         return "未知";
                 }
@@ -50,7 +52,7 @@ namespace ComputerUsage
             {
                 if(file.Name== "ContainedDataFormats.txt")
                 {
-                    return "";
+                    return File.ReadAllLines(file.FullName).Length.ToString()+"类";
                 }
                 if (!file.Exists)
                 {
