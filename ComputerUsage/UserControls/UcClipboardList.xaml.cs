@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -83,7 +85,7 @@ namespace ComputerUsage
             }
         }
 
-        private void lvwClipboardDetail_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void lvwClipboardDetail_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ClipboardDetailInfo info = lvwClipboardDetail.SelectedItem as ClipboardDetailInfo;
             if (info == null)
@@ -123,7 +125,25 @@ namespace ComputerUsage
                     break;
                 case "网页":
                     WebBrowser web = new WebBrowser();
-                    web.Navigate(new Uri(info.file.FullName));
+                  //StreamReader stream=  new StreamReader(info.file.FullName,Encoding.UTF8);
+                    string str = File.ReadAllText(info.file.FullName);
+
+                    StringBuilder retVal = new StringBuilder(10240);
+                    await   Task.Run(() =>
+                    {
+                        char[] s = str.ToCharArray();
+
+                        foreach (char c in s)
+                        {
+                            if (Convert.ToInt32(c) > 127)
+                                retVal .Append( "&#" + Convert.ToInt32(c) + ";");
+                            else
+                                retVal .Append( c);
+                        }
+                    });
+
+
+                    web.NavigateToString(retVal.ToString());
                     grdDetail.Children.Add(web);
                     break;
                 case "表格":

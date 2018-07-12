@@ -41,6 +41,10 @@ namespace ComputerUsage
                 lastBackupTime = DateTime.Now;
                 Backup();
             }
+            if(xml.LastTimeOfDatas.Day!=DateTime.Today.Day)
+            {
+                xml = new XmlHelper();
+            }
         }
 
 
@@ -61,7 +65,7 @@ namespace ComputerUsage
                 }
             }
 
-            File.Copy(ConfigDirectory + "\\History.xml", directory + "\\Backup_" + DateTime.Now.ToString("yyyyMMddhhmmss") + ".xml");
+            File.Copy(xml.Path, directory + "\\Backup_" + DateTime.Now.ToString("yyyyMMddhhmmss") + ".xml");
         }
     }
 }

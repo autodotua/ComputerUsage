@@ -25,7 +25,7 @@ namespace ComputerUsage
             {
                 battery = new BatteryInfo(GetBatteryStatus());
             }
-            if(Set.IncludeNetwork)
+            if (Set.IncludeNetwork)
             {
                 pingInfos = GetNetworkStatus();
             }
@@ -35,12 +35,12 @@ namespace ComputerUsage
         }
 
         public DataInfo(DateTime time,
-           IEnumerable< ProcessInfo> processes,
+           IEnumerable<ProcessInfo> processes,
            IEnumerable<WindowInfo> windows,
             BatteryInfo battery,
             WindowInfo foregroundWindow,
             bool mouseMoved,
-          List<  PingInfo> network)
+          List<PingInfo> network)
         {
             this.time = time;
             if (processes != null)
@@ -62,18 +62,18 @@ namespace ComputerUsage
         public DateTime Time => time;
 
         public ProcessInfo[] processes;
-        public string DisplayProcessCount => processes==null? "无":processes.Length.ToString();
+        public string DisplayProcessCount => processes == null ? "无" : processes.Length.ToString();
 
         public WindowInfo[] windows;
-        public string DisplayWindowCount => windows==null?"无": windows.Length.ToString();
+        public string DisplayWindowCount => windows == null ? "无" : windows.Length.ToString();
         public WindowInfo foregroundWindow;
         public string DisplayForegroundWindow
         {
             get
             {
-                if (foregroundWindow.name=="")
+                if (foregroundWindow.name == "")
                 {
-                    if(foregroundWindow.className=="")
+                    if (foregroundWindow.className == "")
                     {
                         return "（无标题和类名）";
                     }
@@ -88,12 +88,12 @@ namespace ComputerUsage
         }
 
         public BatteryInfo battery;
-        public string DisplayBatteryLifePercent => battery==null?"无":battery.Percent + "%";
+        public string DisplayBatteryLifePercent => battery == null ? "无" : battery.Percent + "%";
         public SolidColorBrush DisplayBatteryStatus
         {
             get
             {
-                if(battery==null)
+                if (battery == null)
                 {
                     return new SolidColorBrush(Colors.Black);
                 }
@@ -105,8 +105,8 @@ namespace ComputerUsage
                 {
                     return new SolidColorBrush(Color.FromArgb(0xFF, 0xff, 0x00, 0x00));
                 }
-                 return new SolidColorBrush(Colors.Black);
-            
+                return new SolidColorBrush(Colors.Black);
+
             }
         }
 
@@ -136,13 +136,13 @@ namespace ComputerUsage
 
             get
             {
-                if(pingInfos.Count==0)
+                if (pingInfos.Count == 0)
                 {
                     return "未知";
                 }
-                if(pingInfos.Any(p=>p.time==-1))
+                if (pingInfos.Any(p => p.time == -1))
                 {
-                    if(pingInfos.Any(p=>p.time!=-1))
+                    if (pingInfos.Any(p => p.time != -1))
                     {
                         return "部分连接";
                     }
@@ -153,7 +153,7 @@ namespace ComputerUsage
                 }
                 return "完全连接";
             }
-            
+
         }
     }
 }

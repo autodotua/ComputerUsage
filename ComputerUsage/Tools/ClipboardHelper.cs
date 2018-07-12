@@ -26,7 +26,7 @@ namespace ComputerUsage
         private static DateTime lastTime = DateTime.MinValue;
 
         public static string ClipboardHistoryPath => ConfigDirectory + "\\ClipboardHistory";
-        private void ClipboardChangedEventHandler(object sender, WpfCodes.WindowsApi.ClipboardEventArgs e)
+        private async void ClipboardChangedEventHandler(object sender, WpfCodes.WindowsApi.ClipboardEventArgs e)
         {
             //var tokenSource = new CancellationTokenSource();
             //var token = tokenSource.Token;
@@ -148,12 +148,19 @@ namespace ComputerUsage
                     File.WriteAllText(path + "Files.txt", fileNames.ToString());
                 }
                 currentStep = "刷新";
-                if (App.Current.MainWindow != null)
+                try
                 {
-                    if ((App.Current.MainWindow as MainWindow).tabClipboard.IsSelected)
+                    if (App.Current.MainWindow != null)
                     {
-                        (App.Current.MainWindow as MainWindow).ucClipboard.Load();
+                        if ((App.Current.MainWindow as MainWindow).tabClipboard.IsSelected)
+                        {
+                            (App.Current.MainWindow as MainWindow).ucClipboard.Load();
+                        }
                     }
+                }
+                catch
+                {
+
                 }
             }
             catch (Exception ex)
@@ -185,6 +192,20 @@ namespace ComputerUsage
             //    tokenSource.Cancel();
             //    Debug.WriteLine("超时！");
             //}
+
+            foreach (var directoryName in Directory.EnumerateDirectories(ClipboardHistoryPath).Select(p=>new DirectoryInfo(p).Name))
+            {
+                if (!DateTime.TryParseExact(directoryName, "yyyyMMddHHmmssfff", CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime result))
+                {
+                    continue;
+                }
+                if (result.Date != DateTime.Today)
+                {
+                  await  ZipOldFiles();
+                    xml.Write("打包了旧的剪贴板数据");
+                    return;
+                }
+            }
 
         }
 

@@ -13,31 +13,31 @@ namespace ComputerUsage
 {
     public class XmlHelper
     {
-        XmlDocument xml;
+        XmlDocument xmlDocument;
         XmlElement root;
 
-        string xmlPath;
+        public string Path { get; set; }
 
         public XmlHelper()
         {
-            xmlPath = ConfigDirectory + "\\history.xml";
-
+            Path = ConfigDirectory +$"\\History\\{DateTime.Now.ToString("yyyyMM")}.xml";
+          //  Path=ConfigDirectory+"\\History.xml";
             reLoad:
-            xml = new XmlDocument();
-            if (!File.Exists(xmlPath))
+            xmlDocument = new XmlDocument();
+            if (!File.Exists(Path))
             {
                 Directory.CreateDirectory(ConfigDirectory);
-                XmlDeclaration xdec = xml.CreateXmlDeclaration("1.0", "UTF-8", null);
-                xml.AppendChild(xdec);
-                root = xml.CreateElement("ComputerUsage");
-                xml.AppendChild(root);
-               Save();
+                XmlDeclaration xdec = xmlDocument.CreateXmlDeclaration("1.0", "UTF-8", null);
+                xmlDocument.AppendChild(xdec);
+                root = xmlDocument.CreateElement("ComputerUsage");
+                xmlDocument.AppendChild(root);
+                Save();
             }
             else
             {
                 try
                 {
-                    xml.Load(xmlPath);
+                    xmlDocument.Load(Path);
                 }
                 catch (Exception ex)
                 {
@@ -67,13 +67,13 @@ namespace ComputerUsage
                             }
 
 
-                            if (File.Exists(xmlPath))
+                            if (File.Exists(Path))
                             {
-                                File.Delete(xmlPath);
+                                File.Delete(Path);
                             }
                             try
                             {
-                                existingFile[0].CopyTo(xmlPath);
+                                existingFile[0].CopyTo(Path);
                             }
                             catch (Exception ex2)
                             {
@@ -103,7 +103,7 @@ namespace ComputerUsage
                     }
                     else if (result == 2)
                     {
-                        File.Delete(xmlPath);
+                        File.Delete(Path);
                         goto reLoad;
                     }
                     else
@@ -112,7 +112,7 @@ namespace ComputerUsage
                     }
 
                 }
-                root = xml.LastChild as XmlElement;
+                root = xmlDocument.LastChild as XmlElement;
             }
             ReloadFields();
             WriteStart();
@@ -126,16 +126,16 @@ namespace ComputerUsage
 
         ~XmlHelper()
         {
-            XmlElement element = xml.CreateElement("Event");
+            XmlElement element = xmlDocument.CreateElement("Event");
             element.SetAttribute("Time", DateTime.Now.ToString());
             element.SetAttribute("Type", "程序关闭");
             root.AppendChild(element);
-           Save();
+            Save();
         }
 
         public void WriteStart()
         {
-            XmlElement element = xml.CreateElement("Event");
+            XmlElement element = xmlDocument.CreateElement("Event");
             element.SetAttribute("Time", DateTime.Now.ToString());
             if ((App.Current as App).startup)
             {
@@ -146,17 +146,17 @@ namespace ComputerUsage
                 element.SetAttribute("Type", "程序启动");
             }
             root.AppendChild(element);
-           Save();
+            Save();
         }
 
         public void Write(string @event)
         {
-            XmlElement element = xml.CreateElement("Event");
+            XmlElement element = xmlDocument.CreateElement("Event");
             element.SetAttribute("Time", DateTime.Now.ToString());
             element.SetAttribute("Type", @event);
             LastEvent = @event;
             root.AppendChild(element);
-           Save();
+            Save();
         }
         public string LastEvent { get; set; }
         public int Count => root.ChildNodes.Count;
@@ -339,7 +339,7 @@ namespace ComputerUsage
 
         public void Write(DataInfo info)
         {
-            XmlElement element = xml.CreateElement("Data");
+            XmlElement element = xmlDocument.CreateElement("Data");
             element.SetAttribute("Time", info.time.ToString());
             if (info.battery != null)
             {
@@ -379,14 +379,14 @@ namespace ComputerUsage
         {
             try
             {
-                xml.Save(xmlPath);
+                xmlDocument.Save(Path);
                 saveFailedTimes = 0;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 saveFailedTimes++;
-                File.AppendAllText("Exception.log", Environment.NewLine + Environment.NewLine + DateTime.Now.ToString() + Environment.NewLine +"文件保存失败"+Environment.NewLine+ ex.ToString());
-                if(saveFailedTimes>5)
+                File.AppendAllText("Exception.log", Environment.NewLine + Environment.NewLine + DateTime.Now.ToString() + Environment.NewLine + "文件保存失败" + Environment.NewLine + ex.ToString());
+                if (saveFailedTimes > 5)
                 {
                     App.Current.Dispatcher.Invoke(() => WpfControls.Dialog.DialogHelper.ShowException("历史文件保存已连续失败五次，请检查错误日志！", ex));
                 }
@@ -394,7 +394,7 @@ namespace ComputerUsage
         }
         private XmlElement GetBatteryXml(BatteryInfo battery)
         {
-            XmlElement element = xml.CreateElement("Battery");
+            XmlElement element = xmlDocument.CreateElement("Battery");
             element.SetAttribute("Percent", battery.Percent.ToString());
             element.SetAttribute("PowerOnline", battery.PowerOnline.ToString());
             return element;
@@ -402,10 +402,10 @@ namespace ComputerUsage
 
         private XmlElement GetWindowXml(IEnumerable<WindowInfo> wins)
         {
-            XmlElement element = xml.CreateElement("Windows");
+            XmlElement element = xmlDocument.CreateElement("Windows");
             foreach (var win in wins)
             {
-                XmlElement child = xml.CreateElement("Window");
+                XmlElement child = xmlDocument.CreateElement("Window");
                 child.SetAttribute("Handle", win.handle.ToString());
                 child.SetAttribute("Name", win.name);
                 child.SetAttribute("ClassName", win.className);
@@ -418,7 +418,7 @@ namespace ComputerUsage
 
         private XmlElement GetWindowXml(WindowInfo win)
         {
-            XmlElement element = xml.CreateElement("ForegroundWindow");
+            XmlElement element = xmlDocument.CreateElement("ForegroundWindow");
 
             element.SetAttribute("Handle", win.handle.ToString());
             element.SetAttribute("Name", win.name);
@@ -427,9 +427,10 @@ namespace ComputerUsage
             element.AppendChild(processElement);
             return element;
         }
+
         private XmlElement GetNetworkXml(IEnumerable<PingInfo> pings)
         {
-            XmlElement element = xml.CreateElement("NetworkStatus");
+            XmlElement element = xmlDocument.CreateElement("NetworkStatus");
 
             try
             {
@@ -440,7 +441,7 @@ namespace ComputerUsage
                         File.AppendAllText("Exception.log", Environment.NewLine + Environment.NewLine + DateTime.Now.ToString() + Environment.NewLine + "ping is null, pings.count=" + pings.Count());
                         continue;
                     }
-                    XmlElement child = xml.CreateElement("Ping");
+                    XmlElement child = xmlDocument.CreateElement("Ping");
                     child.SetAttribute("Address", ping.Address);
                     child.SetAttribute("Time", ping.time.ToString());
                     child.SetAttribute("Result", ping.result.ToString());
@@ -449,16 +450,17 @@ namespace ComputerUsage
                 }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                File.AppendAllText("Exception.log", Environment.NewLine + Environment.NewLine + DateTime.Now.ToString() + Environment.NewLine + "network failed" +Environment.NewLine+ ex.ToString());
+                File.AppendAllText("Exception.log", Environment.NewLine + Environment.NewLine + DateTime.Now.ToString() + Environment.NewLine + "network failed" + Environment.NewLine + ex.ToString());
             }
 
             return element;
         }
+
         private XmlElement GetProcessXml(ProcessInfo[] processes)
         {
-            XmlElement element = xml.CreateElement("Processes");
+            XmlElement element = xmlDocument.CreateElement("Processes");
             foreach (var process in processes)
             {
                 //XmlElement child = xml.CreateElement("Process");
@@ -477,7 +479,7 @@ namespace ComputerUsage
         private XmlElement GetProcessXml(ProcessInfo process)
         {
 
-            XmlElement element = xml.CreateElement("Process");
+            XmlElement element = xmlDocument.CreateElement("Process");
             element.SetAttribute("Id", process.id.ToString());
             element.SetAttribute("Name", process.name);
             element.SetAttribute("PhysicalMemory", process.physicalMemory.ToString());
@@ -488,6 +490,65 @@ namespace ComputerUsage
 
 
             return element;
+        }
+
+        public DateTime LastTimeOfDatas => DateTime.Parse((root.LastChild as XmlElement).GetAttribute("Time"));
+
+        public void Clip()
+        {
+            Dictionary<DateTime, List<XmlElement>> xmlsOfEachMonths = new Dictionary<DateTime, List<XmlElement>>();
+            foreach (XmlElement element in root.ChildNodes)
+            {
+                DateTime time = DateTime.Parse(element.GetAttribute("Time"));
+                DateTime month = new DateTime(time.Year, time.Month, 1);
+                if (xmlsOfEachMonths.ContainsKey(month))
+                {
+                    xmlsOfEachMonths[month].Add(element);
+                }
+                else
+                {
+                    xmlsOfEachMonths.Add(month, new List<XmlElement>() { element });
+                }
+            }
+
+            foreach (var month in xmlsOfEachMonths)
+            {
+                if (month.Key.Year == DateTime.Now.Year && month.Key.Month == DateTime.Now.Month)
+                {
+                    continue;
+                }
+                string xmlPath = ConfigDirectory + "\\History\\" + month.Key.ToString("yyyyMM") + ".xml";
+                if (!Directory.Exists(ConfigDirectory + "\\History"))
+                {
+                    Directory.CreateDirectory(ConfigDirectory + "\\History");
+                }
+                XmlDocument xmlOfThisMonth = new XmlDocument();
+
+                XmlElement currentRoot;
+                if (File.Exists(xmlPath))
+                {
+                    xmlOfThisMonth.Load(xmlPath);
+                    currentRoot = xmlOfThisMonth.LastChild as XmlElement;
+                }
+                else
+                {
+                    XmlDeclaration xdec = xmlOfThisMonth.CreateXmlDeclaration("1.0", "UTF-8", null);
+                    xmlOfThisMonth.AppendChild(xdec);
+                    currentRoot = xmlOfThisMonth.CreateElement("ComputerUsage");
+                    xmlOfThisMonth.AppendChild(currentRoot);
+                }
+
+                foreach (var element in month.Value)
+                {
+                    currentRoot.AppendChild(xmlOfThisMonth.ImportNode(element, true));
+
+                    root.RemoveChild(element);
+                }
+
+
+                xmlOfThisMonth.Save(xmlPath);
+            }
+            Save();
         }
 
     }
