@@ -29,7 +29,7 @@ namespace ComputerUsage
     /// </summary>
     public partial class MainWindow : Window
     {
-
+        
         public MainWindow()
         {
             WpfControls.Dialog.DialogHelper.DefautDialogOwner = this;
@@ -92,8 +92,28 @@ namespace ComputerUsage
                     var ucBatteryChart = new UcBatteryChart();
                     frmChart.Content = ucBatteryChart;
                     break;
+                case "4":
+                    var ucPerformanceChart = new UcPerformanceChart();
+                    frmChart.Content = ucPerformanceChart;
+                    break;
             }
         }
+
+        public bool IsBusy
+        {
+            set
+            {
+                if(value)
+                {
+                    loading.Show();
+                }
+                else
+                {
+                    loading.Hide();
+                }
+            }
+        }
+
     }
 
 

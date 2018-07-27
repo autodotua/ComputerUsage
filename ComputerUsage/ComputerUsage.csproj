@@ -61,6 +61,12 @@
     <Reference Include="CsvHelper, Version=7.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <HintPath>..\packages\CsvHelper.7.1.1\lib\net45\CsvHelper.dll</HintPath>
     </Reference>
+    <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -80,11 +86,13 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="WPfCodes">
-      <HintPath>..\..\WPF模块\Codes\bin\Debug\WPfCodes.dll</HintPath>
+    <Reference Include="WpfCodes, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\WPF模块\Codes\bin\x64\$(Configuration)\WpfCodes.dll</HintPath>
     </Reference>
-    <Reference Include="WpfControls">
-      <HintPath>..\..\WPF模块\Controls\bin\Debug\WpfControls.dll</HintPath>
+    <Reference Include="WpfControls, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\WPF模块\Controls\bin\x64\$(Configuration)\WpfControls.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -92,33 +100,40 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Charts\UcPerformanceChart.xaml.cs">
+      <DependentUpon>UcPerformanceChart.xaml</DependentUpon>
+    </Compile>
     <Compile Include="InfoClasses\BatteryInfo.cs" />
     <Compile Include="InfoClasses\ClipboardDetailInfo.cs" />
     <Compile Include="InfoClasses\ClipboardInfo.cs" />
     <Compile Include="InfoClasses\DataInfo.cs" />
     <Compile Include="InfoClasses\EventInfo.cs" />
+    <Compile Include="InfoClasses\PerformanceInfo.cs" />
     <Compile Include="InfoClasses\PingInfo.cs" />
     <Compile Include="InfoClasses\SystemInfo.cs" />
     <Compile Include="Tools\BackgroundWork.cs" />
     <Compile Include="Tools\ClipboardHelper.cs" />
     <Compile Include="Tools\Settings.cs" />
-    <Compile Include="UserControls\PgNetworkDetail.xaml.cs">
-      <DependentUpon>PgNetworkDetail.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\PgWindowsDetail.xaml.cs">
+    <Compile Include="InfoDetails\PgWindowsDetail.xaml.cs">
       <DependentUpon>PgWindowsDetail.xaml</DependentUpon>
     </Compile>
+    <Compile Include="InfoDetails\PgPerformanceDetail.xaml.cs">
+      <DependentUpon>PgPerformanceDetail.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="InfoDetails\PgNetworkDetail.xaml.cs">
+      <DependentUpon>PgNetworkDetail.xaml</DependentUpon>
+    </Compile>
     <Compile Include="InfoClasses\ProcessInfo.cs" />
-    <Compile Include="UserControls\UcBlockChart.xaml.cs">
+    <Compile Include="Charts\UcBlockChart.xaml.cs">
       <DependentUpon>UcBlockChart.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\UcBatteryChart.xaml.cs">
+    <Compile Include="Charts\UcBatteryChart.xaml.cs">
       <DependentUpon>UcBatteryChart.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\PgProcessesDetail.xaml.cs">
+    <Compile Include="InfoDetails\PgProcessesDetail.xaml.cs">
       <DependentUpon>PgProcessesDetail.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\UcForegroundWindowList.xaml.cs">
+    <Compile Include="Charts\UcForegroundWindowList.xaml.cs">
       <DependentUpon>UcForegroundWindowList.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\UcClipboardList.xaml.cs">
@@ -132,19 +147,27 @@
     </Compile>
     <Compile Include="InfoClasses\WindowInfo.cs" />
     <Compile Include="Tools\XmlHelper.cs" />
-    <Page Include="UserControls\PgNetworkDetail.xaml">
+    <Page Include="Charts\UcPerformanceChart.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UserControls\PgWindowsDetail.xaml">
+    <Page Include="InfoDetails\PgWindowsDetail.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UserControls\UcBlockChart.xaml">
+    <Page Include="InfoDetails\PgPerformanceDetail.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UserControls\UcBatteryChart.xaml">
+    <Page Include="InfoDetails\PgNetworkDetail.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Charts\UcBlockChart.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Charts\UcBatteryChart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -162,11 +185,11 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="UserControls\PgProcessesDetail.xaml">
+    <Page Include="InfoDetails\PgProcessesDetail.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\UcForegroundWindowList.xaml">
+    <Page Include="Charts\UcForegroundWindowList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

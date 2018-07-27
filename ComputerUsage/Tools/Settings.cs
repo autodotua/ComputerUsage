@@ -15,6 +15,7 @@ namespace ComputerUsage
 
         public bool IncludeWindows { get; set; } = false;
         public bool IncludeProcesses { get; set; } = false;
+        public bool IncludePerformance { get; set; } = true;
         public bool NoWindowWhenStartup { get; set; } = false;
 
         public int BackupInterval { get; set; } = 60;
@@ -25,6 +26,6 @@ namespace ComputerUsage
 
         public string ImageFormat { get; set; } ="png";
         public int ClipboradTimeOut { get; set; } = 10000;
-        public int ClipboardMinInterval { get; set; } = 200;
+        public int ClipboardMinInterval { get; set; } = 500;
     }
 }

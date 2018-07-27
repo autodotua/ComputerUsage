@@ -29,6 +29,10 @@ namespace ComputerUsage
             {
                 pingInfos = GetNetworkStatus();
             }
+            if (Set.IncludePerformance)
+            {
+                performance = new PerformanceInfo();
+            }
             foregroundWindow = GetForegroundWindowInfo();
             mouseMoved = MouseMoved();
 
@@ -40,7 +44,8 @@ namespace ComputerUsage
             BatteryInfo battery,
             WindowInfo foregroundWindow,
             bool mouseMoved,
-          List<PingInfo> network)
+          List<PingInfo> network,
+          PerformanceInfo performance)
         {
             this.time = time;
             if (processes != null)
@@ -55,10 +60,11 @@ namespace ComputerUsage
             this.foregroundWindow = foregroundWindow;
             this.mouseMoved = mouseMoved;
             this.pingInfos = network;
+            this.performance = performance;
         }
 
         public DateTime time;
-        public string DisplayTime => time.ToString();
+        public string DisplayTime => time.ToShortDateString() + Environment.NewLine + time.ToLongTimeString();
         public DateTime Time => time;
 
         public ProcessInfo[] processes;
@@ -71,19 +77,20 @@ namespace ComputerUsage
         {
             get
             {
-                if (foregroundWindow.name == "")
-                {
-                    if (foregroundWindow.className == "")
-                    {
-                        return "（无标题和类名）";
-                    }
-                    return "（" + foregroundWindow.className + "）";
-                }
-                if (!foregroundWindow.name.Contains(Environment.NewLine))
-                {
-                    return foregroundWindow.name;
-                }
-                return foregroundWindow.name.Replace(Environment.NewLine, "");
+                //if (foregroundWindow.name == "")
+                //{
+                //    if (foregroundWindow.className == "")
+                //    {
+                //        return "（无标题和类名）";
+                //    }
+                //    return "（" + foregroundWindow.className + "）";
+                //}
+                //if (!foregroundWindow.name.Contains(Environment.NewLine))
+                //{
+                //    return foregroundWindow.name;
+                //}
+                //return foregroundWindow.name.Replace(Environment.NewLine, "");
+                return foregroundWindow.name.Replace(Environment.NewLine, "") + Environment.NewLine + foregroundWindow.className.Replace(Environment.NewLine, "");
             }
         }
 
@@ -120,20 +127,6 @@ namespace ComputerUsage
 
         public string DisplayNetworkStatus
         {
-            //get
-            //{
-            //    switch(network)
-            //    {
-            //        case NetworkStatus.All:
-            //            return "完全连接";
-            //        case NetworkStatus.None:
-            //            return "无连接";
-            //        case NetworkStatus.Some:
-            //            return "部分连接";
-            //        default:
-            //            return "未知";
-            //    }
-
             get
             {
                 if (pingInfos.Count == 0)
@@ -144,16 +137,34 @@ namespace ComputerUsage
                 {
                     if (pingInfos.Any(p => p.time != -1))
                     {
-                        return "部分连接";
+                        return "部分连接" + Environment.NewLine + "成功" + ((int)(100.0 * pingInfos.Count(p => p.time != -1) / pingInfos.Count)) + "%";
                     }
                     else
                     {
-                        return "无连接";
+                        return "无连接" + Environment.NewLine + "共尝试" + pingInfos.Count + "个";
                     }
                 }
-                return "完全连接";
+                return "完全连接" + Environment.NewLine + "共尝试" + pingInfos.Count + "个";
             }
 
+        }
+        public PerformanceInfo performance;
+        public string DisplayPerformance
+        {
+            get
+            {
+                if (performance == null)
+                {
+                    return "无";
+                }
+
+                return performance.CpuUsagePercent + "% "
+
+                + WpfCodes.Basic.Number.ByteToFitString(performance.TotalPhysicalMemory - performance.FreePhysicalMemory, 1) + "/"
+                + WpfCodes.Basic.Number.ByteToFitString(performance.TotalPhysicalMemory, 1) + Environment.NewLine
+                  + WpfCodes.Basic.Number.ByteToFitString(performance.TotalPageFile - performance.FreePageFile, 1) + "/"
+                + WpfCodes.Basic.Number.ByteToFitString(performance.TotalPageFile, 1);
+            }
         }
     }
 }

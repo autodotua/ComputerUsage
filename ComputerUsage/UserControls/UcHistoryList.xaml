@@ -18,7 +18,7 @@ Loaded="LoadedEventHandler"
     </UserControl.Resources>
     <Grid x:Name="grdHistoryTable">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="8"/>
 
             <ColumnDefinition Width="*"/>
@@ -59,11 +59,24 @@ Loaded="LoadedEventHandler"
 
                 <ListView.View>
                     <GridView >
-                        <GridViewColumn Header="时间" Width="144" DisplayMemberBinding="{Binding DisplayTime}"/>
+
+                        <GridViewColumn Header="🖱" DisplayMemberBinding="{Binding DisplayMouseMoved}"/>
+
+
+                        <GridViewColumn Header="时间" Width="82" >
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBox BorderThickness="0" HorizontalContentAlignment="Center"
+                                          IsReadOnly="True"   Text="{Binding DisplayTime, Mode=OneTime}"  />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
                         <GridViewColumn Header="进程" Width="64">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <flat:Button 
+                                        HorizontalContentAlignment="Center"
+                                        Height="38"
                                     Content="{Binding DisplayProcessCount}"
                                     Tag="{Binding Time,Mode=OneTime,Converter={StaticResource converter},ConverterParameter=process}"
                                     Click="ButtonsClickEventHandler"/>
@@ -74,6 +87,8 @@ Loaded="LoadedEventHandler"
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <flat:Button
+                                        HorizontalContentAlignment="Center"
+                                        Height="38"
                                     Content="{Binding DisplayWindowCount}"
                                     Tag="{Binding Time,Mode=OneTime,Converter={StaticResource converter},ConverterParameter=window}"
                                     Click="ButtonsClickEventHandler"/>
@@ -85,6 +100,8 @@ Loaded="LoadedEventHandler"
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <flat:Button
+                                        HorizontalContentAlignment="Center"
+                                        Height="38"
                                     Content="{Binding DisplayForegroundWindow}"
                                     Tag="{Binding Time,Mode=OneTime,Converter={StaticResource converter},ConverterParameter=foregroundWindow}"
                                     Click="ButtonsClickEventHandler"/>
@@ -95,13 +112,26 @@ Loaded="LoadedEventHandler"
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <flat:Button
+                                        HorizontalContentAlignment="Center"
+                                        Height="38"
                                     Content="{Binding DisplayNetworkStatus}"
                                     Tag="{Binding Time,Mode=OneTime,Converter={StaticResource converter},ConverterParameter=networkStatus}"
                                     Click="ButtonsClickEventHandler"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-
+                        <GridViewColumn Header="性能" Width="144">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <flat:Button
+                                        HorizontalContentAlignment="Center"
+                                        Height="38"
+                                    Content="{Binding DisplayPerformance}"
+                                    Tag="{Binding Time,Mode=OneTime,Converter={StaticResource converter},ConverterParameter=performance}"
+                                    Click="ButtonsClickEventHandler"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
                         <GridViewColumn Header="电池" Width="64">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
@@ -111,7 +141,6 @@ Loaded="LoadedEventHandler"
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="正在使用" DisplayMemberBinding="{Binding DisplayMouseMoved}"/>
 
                     </GridView>
                 </ListView.View>
@@ -148,7 +177,7 @@ Loaded="LoadedEventHandler"
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="8"/>
                 <RowDefinition Height="7*"/>
-                
+
             </Grid.RowDefinitions>
             <TextBlock Text="详情" Margin="4,0,0,0" VerticalAlignment="Center" FontSize="16"/>
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">

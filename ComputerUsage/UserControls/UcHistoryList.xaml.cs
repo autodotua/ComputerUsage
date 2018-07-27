@@ -146,6 +146,12 @@ namespace ComputerUsage
                             page = new PgNetworkDetail(info.pingInfos);
                         }
                         break;
+                    case "performance":
+                        if (info.performance != null)
+                        {
+                            page = new PgPerformanceDetail(info.performance);
+                        }
+                        break;
                 }
 
                 if (page != null)

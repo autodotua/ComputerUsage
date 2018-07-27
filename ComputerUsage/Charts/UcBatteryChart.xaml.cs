@@ -1,17 +1,11 @@
-﻿using System;
+﻿using LiveCharts;
+using LiveCharts.Configurations;
+using LiveCharts.Wpf;
+using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
 using static ComputerUsage.GlobalDatas;
@@ -24,11 +18,22 @@ namespace ComputerUsage
     /// </summary>
     public partial class UcBatteryChart : UserControl
     {
+        IChartValues Values { get; set; } = new ChartValues<DateTimeBatteryInfo>();
         public UcBatteryChart()
         {
             InitializeComponent();
             dateRange.DateTo = DateTime.Today;
             dateRange.DateFrom = DateTime.Today;
+            DataContext = this;
+            c.Series.Configuration = Mappers.Xy<DateTimeBatteryInfo>()
+                   .X(p => p.DateTime.Ticks)
+                   .Y(p => p.Value)
+                   .Fill(p => p.IsCharging ? Brushes.Green : (p.Value < 20 ? Brushes.Red : Brushes.DarkBlue));
+
+            axisX.LabelFormatter = value => new DateTime((long)value).ToString("dd日HH时");
+
+            s.Values = Values;
+            
         }
         TimeSpan span;
         private bool DrawBorder()
@@ -120,8 +125,33 @@ namespace ComputerUsage
             cvsBackground.Children.Add(tbk);
 
         }
+        private void DrawDynamicPoints()
+        {
+            Values.Clear();
+            Dictionary<DateTime, BatteryInfo> batteryInfos = new Dictionary<DateTime, BatteryInfo>();
+            foreach (var element in xml.dataElements)
+            {
+                DateTime dateTime = DateTime.Parse(element.GetAttribute("Time"));
+                DateTime date = dateTime.Date;
+                if (date > dateRange.DateTo || date < dateRange.DateFrom)
+                {
+                    continue;
+                }
 
-        private void DrawPoints()
+                BatteryInfo battery = XmlHelper.GetBatteryInfo(element.ChildNodes.Cast<XmlElement>().FirstOrDefault(p => p.Name == "Battery"));
+                batteryInfos.Add(dateTime, battery);
+            }
+
+            foreach (var item in batteryInfos)
+            {
+                DateTime time = item.Key;
+                BatteryInfo battery = item.Value;
+                Values.Add(new DateTimeBatteryInfo(time, battery.Percent, battery.PowerOnline));
+            }
+            axisX.MinValue = axisX.MaxValue = double.NaN;
+        }
+
+        private void DrawStaticPoints()
         {
             Dictionary<DateTime, BatteryInfo> batteryInfos = new Dictionary<DateTime, BatteryInfo>();
             foreach (var element in xml.dataElements)
@@ -135,10 +165,7 @@ namespace ComputerUsage
                 }
 
                 BatteryInfo battery = XmlHelper.GetBatteryInfo(element.ChildNodes.Cast<XmlElement>().FirstOrDefault(p => p.Name == "Battery"));
-
                 batteryInfos.Add(dateTime, battery);
-
-
             }
 
 
@@ -154,7 +181,6 @@ namespace ComputerUsage
                 double height = cvs.Height * (1 - battery.Percent / 100.0);
                 DrawPoint(width, height, battery.PowerOnline ? Brushes.Green : Brushes.Red);
             }
-
 
         }
 
@@ -193,16 +219,48 @@ namespace ComputerUsage
         DateTime lastDateEnd = DateTime.Now;
         private void DateRangeAvailableAndChangedEventHandler(object sender, SelectionChangedEventArgs e)
         {
-            cvsBackground.Children.Clear();
-            cvs.Children.Clear();
-            if (DrawBorder())
+            WpfCodes.Program.Thread.DoEvents();
+            if (cbbType.SelectedIndex == 0)
             {
-                DrawTexts();
-                DrawPoints();
+                g.Visibility = System.Windows.Visibility.Hidden;
+                c.Visibility = System.Windows.Visibility.Visible;
+
+                DrawDynamicPoints();
             }
+            else
+            {
+                g.Visibility = System.Windows.Visibility.Visible;
+                c.Visibility = System.Windows.Visibility.Hidden;
+                cvsBackground.Children.Clear();
+                cvs.Children.Clear();
+                if (DrawBorder())
+                {
+                    DrawTexts();
+                    DrawStaticPoints();
+                }
+            }
+
+
+
         }
 
     }
 
+    public class DateTimeBatteryInfo
+    {
+        public DateTimeBatteryInfo(DateTime dateTime, double value, bool isCharging)
+        {
+            DateTime = dateTime;
+            Value = value;
+            IsCharging = isCharging;
+        }
+
+        public DateTime DateTime { get; set; }
+        public double Value { get; set; }
+        public bool IsCharging { get; set; }
+
+    }
+
+        
 }
 

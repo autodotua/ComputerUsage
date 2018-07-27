@@ -17,11 +17,16 @@ namespace ComputerUsage
 {
     public static class ComputerDatas
     {
+        private static PerformanceCounter cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total", true);
+
+
         public static void RegistSystemEvents()
         {
             SystemEvents.SessionEnding += SystemEventsSessionEndingEventHandler;
             SystemEvents.PowerModeChanged += SystemEventsPowerModeChangedEventHandler;
             SystemEvents.SessionSwitch += SystemEventsSessionSwitchEventHandler;
+
+            cpuCounter.NextValue();
         }
 
 
@@ -102,7 +107,7 @@ namespace ComputerUsage
         {
             // var s = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();
             ConcurrentBag<PingInfo> pings = new ConcurrentBag<PingInfo>();
-            string[] addresses = Set.PingAddress.Split(new string[] { Environment.NewLine },StringSplitOptions.RemoveEmptyEntries);
+            string[] addresses = Set.PingAddress.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             //  int successfulCount = 0;
             Parallel.ForEach(addresses, p =>
             {
@@ -271,6 +276,9 @@ namespace ComputerUsage
             lastPosition = currentPosition;
             return flag;
         }
+
+        public static int CpuUsage => (int)cpuCounter.NextValue();
+        
     }
 
 

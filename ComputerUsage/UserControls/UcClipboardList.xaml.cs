@@ -17,8 +17,8 @@ namespace ComputerUsage
     /// </summary>
     public partial class UcClipboardList : UserControl
     {
-        int currentPageCount;
-        bool needReload = true;
+        //int currentPageCount;
+        //bool needReload = true;
 
         ObservableCollection<ClipboardInfo> clipboardHistoryInfos = new ObservableCollection<ClipboardInfo>();
         ObservableCollection<ClipboardDetailInfo> clipboardDetailInfos = new ObservableCollection<ClipboardDetailInfo>();

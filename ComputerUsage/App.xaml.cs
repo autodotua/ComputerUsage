@@ -12,7 +12,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using WpfControls.ButtonBase;
 using static ComputerUsage.GlobalDatas;
 
 namespace ComputerUsage
@@ -22,7 +21,7 @@ namespace ComputerUsage
     /// </summary>
     public partial class App : Application
     {
-        TrayIcon trayIcon;
+        WpfCodes.Program.TrayIcon trayIcon;
         public BackgroundWork background;
         public bool startup = false;
         public App()
@@ -36,9 +35,26 @@ namespace ComputerUsage
                 return;
             }
 
-            TaskScheduler.UnobservedTaskException += (p1, p2) => { if (!p2.Observed) ShowException(p2.Exception,3); };//Task
-            AppDomain.CurrentDomain.UnhandledException += (p1, p2) => ShowException((Exception)p2.ExceptionObject,2);//UI
-            DispatcherUnhandledException += (p1, p2) => ShowException(p2.Exception,1);//Thread
+            //TaskScheduler.UnobservedTaskException += (p1, p2) => { if (!p2.Observed) ShowException(p2.Exception,3); };//Task
+            //AppDomain.CurrentDomain.UnhandledException += (p1, p2) => ShowException((Exception)p2.ExceptionObject,2);//UI
+            //DispatcherUnhandledException += (p1, p2) => ShowException(p2.Exception,1);//Thread
+            new WpfCodes.Program.Exception().UnhandledException += (p1, p2) =>
+          {
+              try
+              {
+                  Dispatcher.Invoke(() => WpfControls.Dialog.DialogHelper.ShowException("程序发生了未捕获的错误，类型" +p2.Source.ToString(), p2.Exception));
+
+                  File.AppendAllText("Exception.log", Environment.NewLine + Environment.NewLine + DateTime.Now.ToString() + Environment.NewLine + p2.Exception.ToString());
+              }
+              catch (Exception ex)
+              {
+                  Dispatcher.Invoke(() => WpfControls.Dialog.DialogHelper.ShowException("错误信息无法写入", ex));
+              }
+              finally
+              {
+                  App.Current.Shutdown();
+              }
+          };
 #endif
 
         }
@@ -46,23 +62,23 @@ namespace ComputerUsage
 
 
 
-        private void ShowException(Exception ex,int type)
-        {
-            try
-            {
-                Dispatcher.Invoke(() => WpfControls.Dialog.DialogHelper.ShowException("程序发生了未捕获的错误，类型"+type.ToString(), ex));
+        //private void ShowException(Exception ex,int type)
+        //{
+        //    try
+        //    {
+        //        Dispatcher.Invoke(() => WpfControls.Dialog.DialogHelper.ShowException("程序发生了未捕获的错误，类型"+type.ToString(), ex));
 
-                File.AppendAllText("Exception.log", Environment.NewLine + Environment.NewLine + DateTime.Now.ToString() + Environment.NewLine + ex.ToString());
-            }
-            catch (Exception ex2)
-            {
-                Dispatcher.Invoke(() => WpfControls.Dialog.DialogHelper.ShowException("错误信息无法写入", ex2));
-            }
-            finally
-            {
-                App.Current.Shutdown();
-            }
-        }
+        //        File.AppendAllText("Exception.log", Environment.NewLine + Environment.NewLine + DateTime.Now.ToString() + Environment.NewLine + ex.ToString());
+        //    }
+        //    catch (Exception ex2)
+        //    {
+        //        Dispatcher.Invoke(() => WpfControls.Dialog.DialogHelper.ShowException("错误信息无法写入", ex2));
+        //    }
+        //    finally
+        //    {
+        //        App.Current.Shutdown();
+        //    }
+        //}
 
         private void ApplicationStartupEventHandler(object sender, StartupEventArgs e)
         {
@@ -89,7 +105,7 @@ namespace ComputerUsage
 
                 {"退出" ,()=>Shutdown() },
             };
-            trayIcon = new TrayIcon(ComputerUsage.Properties.Resources.ICON, "计算机使用情况", newWindow, rightMouseClick);
+            trayIcon = new WpfCodes.Program.TrayIcon(ComputerUsage.Properties.Resources.ICON, "计算机使用情况", newWindow, rightMouseClick);
             trayIcon.Show();
             if (!startup)
             {

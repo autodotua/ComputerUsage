@@ -10,14 +10,11 @@
 
         public BatteryInfo(int percent, bool powerOnline)
         {
-            this.percent = percent;
-            this.powerOnline = powerOnline;
+            this.Percent = percent;
+            this.PowerOnline = powerOnline;
         }
 
-        private int percent;
-        private bool powerOnline;
-
-        public bool PowerOnline { get => powerOnline; set => powerOnline = value; }
-        public int Percent { get => percent; set => percent = value; }
+        public bool PowerOnline { get; set; }
+        public int Percent { get; set; }
     }
 }

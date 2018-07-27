@@ -20,8 +20,8 @@ namespace ComputerUsage
 
         public XmlHelper()
         {
-            Path = ConfigDirectory +$"\\History\\{DateTime.Now.ToString("yyyyMM")}.xml";
-          //  Path=ConfigDirectory+"\\History.xml";
+            Path = ConfigDirectory + $"\\History\\{DateTime.Now.ToString("yyyyMM")}.xml";
+            //  Path=ConfigDirectory+"\\History.xml";
             reLoad:
             xmlDocument = new XmlDocument();
             if (!File.Exists(Path))
@@ -169,6 +169,8 @@ namespace ComputerUsage
         public int DataCount => DataElements.Count;
         public int EventCount => EventElements.Count;
 
+
+        #region XML TO INFO
         public List<DataInfo> ReadDataHistory(int first, int last)
         {
             List<DataInfo> infos = new List<DataInfo>();
@@ -182,16 +184,12 @@ namespace ComputerUsage
                 }
 
                 XmlElement element = dataElements[current] as XmlElement;
-                //if (element.Name == "Event")
-                //{
-                //    CurrentItemColor = 1 - CurrentItemColor;
-                //    continue;
-                //}
                 XmlElement winElements = null;
                 XmlElement batteryElement = null;
                 XmlElement processElements = null;
                 XmlElement foregroundWindowElement = null;
                 XmlElement networkElement = null;
+                XmlElement performanceElement = null;
                 foreach (XmlElement child in element.ChildNodes)
                 {
                     switch (child.Name)
@@ -212,6 +210,9 @@ namespace ComputerUsage
                         case "NetworkStatus":
                             networkElement = child;
                             break;
+                        case "Performance":
+                            performanceElement = child;
+                            break;
                     }
                 }
 
@@ -220,59 +221,100 @@ namespace ComputerUsage
                 //    throw new Exception("XML文档被篡改");
                 //}
                 DateTime time = DateTime.Parse(element.GetAttribute("Time"));
+
+                //窗口
                 List<WindowInfo> wins = null;
                 if (winElements != null)
                 {
-                    wins = new List<WindowInfo>();
-                    foreach (XmlElement winElement in winElements.ChildNodes)
+                    try
                     {
+                        wins = new List<WindowInfo>();
+                        foreach (XmlElement winElement in winElements.ChildNodes)
+                        {
 
-                        wins.Add(GetWindowInfo(winElement));
+                            wins.Add(GetWindowInfo(winElement));
+                        }
+                    }
+                    catch
+                    {
+                        wins = null;
                     }
                 }
+
+                //进程
                 List<ProcessInfo> pros = null;
                 if (processElements != null)
                 {
-                    pros = new List<ProcessInfo>();
-                    foreach (XmlElement processElement in processElements.ChildNodes)
+                    try
                     {
-
-                        pros.Add(GetProcessInfo(processElement));
+                        pros = new List<ProcessInfo>();
+                        foreach (XmlElement processElement in processElements.ChildNodes)
+                        {
+                            pros.Add(GetProcessInfo(processElement));
+                        }
+                    }
+                    catch
+                    {
+                        pros = null;
                     }
                 }
+
+                //电池
                 BatteryInfo battery = null;
                 if (batteryElement != null)
                 {
-                    battery = GetBatteryInfo(batteryElement);
+                    try
+                    {
+                        battery = GetBatteryInfo(batteryElement);
+                    }
+                    catch
+                    {
+                        battery = null;
+                    }
                 }
+
+                //前台窗口
                 WindowInfo foreground = GetWindowInfo(foregroundWindowElement);
                 bool mouseMoved = false;
                 if (element.HasAttribute("MouseMoved"))
                 {
                     mouseMoved = bool.Parse(element.GetAttribute("MouseMoved"));
                 }
-                //ComputerDatas.NetworkStatus net = ComputerDatas.NetworkStatus.Unknow;
+
+                //网络
                 List<PingInfo> pings = new List<PingInfo>();
                 if (networkElement != null)
                 {
-                    foreach (XmlElement child in networkElement)
+                    try
                     {
-                        pings.Add(new PingInfo(child.GetAttribute("Address"), int.Parse(child.GetAttribute("Time")), child.HasAttribute("Result") ? ((IPStatus)Enum.Parse(typeof(IPStatus), child.GetAttribute("Result"))) : IPStatus.Unknown));
+                        foreach (XmlElement child in networkElement)
+                        {
+                            pings.Add(new PingInfo(child.GetAttribute("Address"),
+                                int.Parse(child.GetAttribute("Time")),
+                                child.HasAttribute("Result") ? ((IPStatus)Enum.Parse(typeof(IPStatus), child.GetAttribute("Result"))) : IPStatus.Unknown));
+                        }
                     }
-                    //    switch(networkElement.GetAttribute("NetworkStatus"))
-                    //    {
-                    //        case "完全连接":
-                    //            net = ComputerDatas.NetworkStatus.All;
-                    //            break;
-                    //        case "部分连接":
-                    //            net = ComputerDatas.NetworkStatus.Some;
-                    //            break;
-                    //        case "无连接":
-                    //            net = ComputerDatas.NetworkStatus.None;
-                    //            break;
-                    //    }
+                    catch
+                    {
+                        pings = null;
+                    }
                 }
-                DataInfo history = new DataInfo(time, pros, wins, battery, foreground, mouseMoved, pings);
+
+                PerformanceInfo performance = null;
+                //性能
+                if (performanceElement != null)
+                {
+                    try
+                    {
+                        performance = GetPerformanceInfo(performanceElement);
+                    }
+                    catch
+                    {
+                        performance = null;
+                    }
+                }
+
+                DataInfo history = new DataInfo(time, pros, wins, battery, foreground, mouseMoved, pings, performance);
                 infos.Add(history);
 
                 current++;
@@ -321,6 +363,7 @@ namespace ComputerUsage
                  bool.Parse(element.GetAttribute("Responding")),
                 element.GetAttribute("MainModuleFileName") ?? "");
         }
+
         public static WindowInfo GetWindowInfo(XmlElement element)
         {
             XmlElement processElement = element.ChildNodes.Cast<XmlElement>().FirstOrDefault(p => p.Name == "Process");
@@ -336,7 +379,19 @@ namespace ComputerUsage
              process);
         }
 
+        public static PerformanceInfo GetPerformanceInfo(XmlElement element)
+        {
+            return new PerformanceInfo(
+              int.Parse(element.GetAttribute("CpuUsagePercent")),
+              long.Parse(element.GetAttribute("FreePhysical")),
+              long.Parse(element.GetAttribute("TotalPhysical")),
+              long.Parse(element.GetAttribute("FreePage")),
+              long.Parse(element.GetAttribute("TotalPage")),
+              long.Parse(element.GetAttribute("MainDiskPartitionTotalSize")),
+              long.Parse(element.GetAttribute("MainDiskPartitionFreeSize")));
+        }
 
+        #endregion
         public void Write(DataInfo info)
         {
             XmlElement element = xmlDocument.CreateElement("Data");
@@ -357,20 +412,15 @@ namespace ComputerUsage
             {
                 element.AppendChild(GetNetworkXml(info.pingInfos));
             }
+            if (info.performance != null)
+            {
+                element.AppendChild(GetPerformanceXml(info.performance));
+            }
             element.AppendChild(GetWindowXml(info.foregroundWindow));
             element.SetAttribute("MouseMoved", info.mouseMoved.ToString());
             // element.SetAttribute("NetworkStatus",info.DisplayNetwork);
             root.AppendChild(element);
 
-
-            //if(File.Exists(xmlPath))
-            //{
-            //    if(File.Exists(ConfigDirectory + "\\history.bak"))
-            //    {
-            //        File.Delete(ConfigDirectory + "\\history.bak");
-            //    }
-            //    File.Copy(xmlPath, ConfigDirectory + "\\history.bak");
-            //}
             Save();
         }
 
@@ -392,6 +442,8 @@ namespace ComputerUsage
                 }
             }
         }
+
+        #region INFO TO XML
         private XmlElement GetBatteryXml(BatteryInfo battery)
         {
             XmlElement element = xmlDocument.CreateElement("Battery");
@@ -491,6 +543,21 @@ namespace ComputerUsage
 
             return element;
         }
+
+        private XmlElement GetPerformanceXml(PerformanceInfo p)
+        {
+            XmlElement element = xmlDocument.CreateElement("Performance");
+            element.SetAttribute("CpuUsagePercent", p.CpuUsagePercent.ToString());
+            element.SetAttribute("FreePhysical", p.FreePhysicalMemory.ToString());
+            element.SetAttribute("TotalPhysical", p.TotalPhysicalMemory.ToString());
+            element.SetAttribute("FreePage", p.FreePageFile.ToString());
+            element.SetAttribute("TotalPage", p.TotalPageFile.ToString());
+            element.SetAttribute("MainDiskPartitionTotalSize", p.MainDiskPartitionTotalSize.ToString());
+            element.SetAttribute("MainDiskPartitionFreeSize", p.MainDiskPartitionFreeSize.ToString());
+            return element;
+        }
+
+        #endregion
 
         public DateTime LastTimeOfDatas => DateTime.Parse((root.LastChild as XmlElement).GetAttribute("Time"));
 

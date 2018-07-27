@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:flat="clr-namespace:WpfControls.FlatStyle;assembly=WpfControls"
+        xmlns:p="clr-namespace:WpfControls.Progress;assembly=WpfControls"
         xmlns:local="clr-namespace:ComputerUsage"
         mc:Ignorable="d"
         Loaded="WindowLoadedEventHandler"
@@ -95,9 +96,11 @@
                 <StackPanel>
                     <flat:Button Tag="1" Margin="0,4" Click="ChartBtnClickEventHandler">每日使用情况块状图</flat:Button>
                     <flat:Button Tag="2" Margin="0,4" Click="ChartBtnClickEventHandler">前台窗口统计表</flat:Button>
-                    <flat:Button Tag="3" Margin="0,4" Click="ChartBtnClickEventHandler">电池历史点状图</flat:Button>
+                    <flat:Button Tag="3" Margin="0,4" Click="ChartBtnClickEventHandler">电池历史散点图</flat:Button>
+                    <flat:Button Tag="4" Margin="0,4" Click="ChartBtnClickEventHandler">性能历史散点图</flat:Button>
                 </StackPanel>
                 <Frame x:Name="frmChart" NavigationUIVisibility="Hidden" Grid.Column="2"/>
+                <p:LoadingOverlay x:Name="loading" Grid.ColumnSpan="3" RingSize="0.1"/>
             </Grid>
         </TabItem>
         <TabItem x:Name="tabSettings" Header="设置" Selector.Selected="TabItem_Selected" >
