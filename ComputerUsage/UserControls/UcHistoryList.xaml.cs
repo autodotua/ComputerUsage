@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -20,6 +21,7 @@ using System.Xml;
 using WpfControls;
 using static ComputerUsage.ComputerDatas;
 using static ComputerUsage.GlobalDatas;
+using static WpfControls.Dialog.DialogHelper;
 
 
 namespace ComputerUsage
@@ -49,6 +51,33 @@ namespace ComputerUsage
 
             LoadList();
             currentPageCount = dataHistoryInfos.Count;
+
+            foreach (var item in Directory.EnumerateFiles(ConfigDirectory + "\\History"))
+            {
+                try
+                {
+                    if (item.EndsWith(".xml"))
+                    {
+                        FileInfo file = new FileInfo(item);
+                        cbbMonth.Items.Add(new ComboBoxItem() { Content = file.Name, Tag = file });
+                    }
+
+                }
+                catch
+                {
+
+                }
+            }
+
+            if (cbbMonth.Items.Count > 0)
+            {
+                cbbMonth.SelectedIndex = cbbMonth.Items.Count - 1;
+            }
+            if (ReadOnlyMode)
+            {
+                cbbMonth.IsEnabled = true;
+            }
+            
         }
 
         public void AddToList(DataInfo info)
@@ -106,7 +135,12 @@ namespace ComputerUsage
             }
             else if( btn.Name== "btnRecord")
             {
-                BackgroundWork background = (App.Current as App).background;
+                if(ReadOnlyMode)
+                {
+                    ShowError("无法在只读模式记录");
+                    return;
+                }
+
                 btn.IsEnabled = false;
                 await Task.Run(() => background.Record());
                 btn.IsEnabled = true;
@@ -164,6 +198,7 @@ namespace ComputerUsage
 
         private void LoadList()
         {
+            cbbPageSelection.Items.Clear();
             List<XmlElement> elements=null;
             if (cbbType.SelectedIndex==0)
             {
@@ -218,13 +253,38 @@ namespace ComputerUsage
                 });
             }
             cbbPageSelection.SelectedIndex = cbbPageSelection.Items.Count - 1;
-            if (cbbType.SelectedIndex == 0 && dataHistoryInfos.Count>0)
+            if (cbbType.SelectedIndex == 0 && dataHistoryInfos.Count > 0)
             {
                 lvwDataHistory.ScrollIntoView(dataHistoryInfos.Last());
             }
-            else if(eventHistoryInfos.Count>0)
+            else if (eventHistoryInfos.Count > 0)
             {
                 lvwEventHistory.ScrollIntoView(eventHistoryInfos.Last());
+            }
+
+
+            if(Set.HideColumnsWithoutRecorded)
+            {
+                if (!Set.IncludeProcesses)
+                {
+                    (lvwDataHistory.View as GridView).Columns[2].Width = 0;
+                }
+                if (!Set.IncludeWindows)
+                {
+                    (lvwDataHistory.View as GridView).Columns[3].Width = 0;
+                }
+                if (!Set.IncludeNetwork)
+                {
+                    (lvwDataHistory.View as GridView).Columns[5].Width = 0;
+                }
+                if (!Set.IncludePerformance)
+                {
+                    (lvwDataHistory.View as GridView).Columns[6].Width = 0;
+                }
+                if (!Set.IncludeBattery)
+                {
+                    (lvwDataHistory.View as GridView).Columns[7].Width = 0;
+                }
             }
 
         }
@@ -348,6 +408,13 @@ namespace ComputerUsage
             {
                 frm.GoForward();
             }
+        }
+
+        private void cbbMonth_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            FileInfo file = ((cbbMonth.SelectedItem as ComboBoxItem).Tag as FileInfo);
+            xml = new XmlHelper(file.FullName);
+            LoadList();
         }
     }
     public class DateConverter : IValueConverter

@@ -63,7 +63,7 @@ namespace ComputerUsage
             sldNetTimeOut.Value = Set.PingTimeOut;
             sldBackupCount.Value = Set.BackupCount;
             sldBackupInterval.Value = Set.BackupInterval;
-
+            chkHideColumsWithoutRecorded.IsChecked = Set.HideColumnsWithoutRecorded;
             switch (Set.ImageFormat)
             {
                 case "png":
@@ -101,7 +101,7 @@ namespace ComputerUsage
                 Set.BackupInterval = (int)sldBackupInterval.Value;
                 Set.ClipboardMinInterval = (int)sldClipboardMinInterval.Value;
                 Set.ImageFormat = cbbClipboardImageFormat.SelectedIndex == 0 ? "png" : (cbbClipboardImageFormat.SelectedIndex == 1 ? "jpg" : "bmp");
-
+                Set.HideColumnsWithoutRecorded = chkHideColumsWithoutRecorded.IsChecked.Value;
                 if (cbbStartUp.SelectedIndex == 0)
                 {
                     WpfCodes.Program.Startup.CancelRunWhenStartup("ComputerUsage");

@@ -159,9 +159,10 @@ namespace ComputerUsage
                 }
 
                 return performance.CpuUsagePercent + "% "
-
                 + WpfCodes.Basic.Number.ByteToFitString(performance.TotalPhysicalMemory - performance.FreePhysicalMemory, 1) + "/"
                 + WpfCodes.Basic.Number.ByteToFitString(performance.TotalPhysicalMemory, 1) + Environment.NewLine
+
+                +Convert.ToInt32(100-100*(1.0*performance.MainDiskPartitionFreeSize/performance.MainDiskPartitionTotalSize))+"% "
                   + WpfCodes.Basic.Number.ByteToFitString(performance.TotalPageFile - performance.FreePageFile, 1) + "/"
                 + WpfCodes.Basic.Number.ByteToFitString(performance.TotalPageFile, 1);
             }

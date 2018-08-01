@@ -17,10 +17,13 @@ namespace ComputerUsage
         XmlElement root;
 
         public string Path { get; set; }
-
-        public XmlHelper()
+        public XmlHelper() : this(ConfigDirectory + $"\\History\\{DateTime.Now.ToString("yyyyMM")}.xml")
         {
-            Path = ConfigDirectory + $"\\History\\{DateTime.Now.ToString("yyyyMM")}.xml";
+        }
+
+        public XmlHelper(string path)
+        {
+            Path = path;
             //  Path=ConfigDirectory+"\\History.xml";
             reLoad:
             xmlDocument = new XmlDocument();
@@ -135,6 +138,10 @@ namespace ComputerUsage
 
         public void WriteStart()
         {
+            if(ReadOnlyMode)
+            {
+                return;
+            }
             XmlElement element = xmlDocument.CreateElement("Event");
             element.SetAttribute("Time", DateTime.Now.ToString());
             if ((App.Current as App).startup)
@@ -151,6 +158,10 @@ namespace ComputerUsage
 
         public void Write(string @event)
         {
+            if (ReadOnlyMode)
+            {
+                return;
+            }
             XmlElement element = xmlDocument.CreateElement("Event");
             element.SetAttribute("Time", DateTime.Now.ToString());
             element.SetAttribute("Type", @event);
@@ -394,6 +405,10 @@ namespace ComputerUsage
         #endregion
         public void Write(DataInfo info)
         {
+            if (ReadOnlyMode)
+            {
+                return;
+            }
             XmlElement element = xmlDocument.CreateElement("Data");
             element.SetAttribute("Time", info.time.ToString());
             if (info.battery != null)

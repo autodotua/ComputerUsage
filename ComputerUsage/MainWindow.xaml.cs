@@ -36,6 +36,7 @@ namespace ComputerUsage
 
             InitializeComponent();
             UpdateColor(new SolidColorBrush(Colors.White));
+            
         }
         private void UpdateColor(SolidColorBrush value)
         {

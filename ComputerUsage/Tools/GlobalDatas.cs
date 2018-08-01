@@ -17,6 +17,8 @@ namespace ComputerUsage
 
         // public static Properties.Settings Set => Properties.Settings.Default;
 
+        public static BackgroundWork background;
+
         public static void Load()
         {
             xml = new XmlHelper();
@@ -45,6 +47,8 @@ namespace ComputerUsage
         private static string configDirectory = "";
 
         public static Settings Set;
+
+        public static bool ReadOnlyMode { get; set; } = false;
 
 
         public static void SaveSettings()

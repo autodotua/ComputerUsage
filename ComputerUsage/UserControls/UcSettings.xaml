@@ -42,7 +42,11 @@
         </Grid.RowDefinitions>
         <TextBlock>信息获取时间间隔：</TextBlock>
         <flat:HorizontalSlider x:Name="sldInterval" Minimum="5" Maximum="59" Grid.Column="2"/>
-        <TextBlock Grid.Row="2" VerticalAlignment="Center">需要记录的内容：</TextBlock>
+        <StackPanel Grid.Row="2"  VerticalAlignment="Center">
+            <TextBlock Grid.Row="2" VerticalAlignment="Center">需要记录的内容：</TextBlock>
+            <flat:CheckBox x:Name="chkHideColumsWithoutRecorded" Margin="0,4">隐藏不记录项目的列</flat:CheckBox>
+            <TextBlock Foreground="LightGray">改变设置需要重启应用</TextBlock>
+        </StackPanel>
         <StackPanel Grid.Row="2" Grid.Column="2">
             <flat:CheckBox x:Name="chkProcesses" Margin="0,2">正在运行的进程</flat:CheckBox>
             <flat:CheckBox x:Name="chkWindows" Margin="0,2">窗口</flat:CheckBox>
@@ -71,9 +75,9 @@
         <TextBlock Grid.Row="14">历史备份时间间隔：</TextBlock>
         <flat:HorizontalSlider x:Name="sldBackupInterval" Minimum="5" Maximum="120" TextWidth="72" Grid.Column="2" Grid.Row="14"/>
 
-        <TextBlock Grid.Row="16">历史备份最大数量：</TextBlock>
+        <TextBlock Grid.Row="16">剪贴板最小时间间隔：</TextBlock>
         <flat:HorizontalSlider x:Name="sldClipboardMinInterval" Minimum="0" Maximum="1000" TextWidth="72" Grid.Column="2" Grid.Row="16"/>
-        <TextBlock Grid.Row="18">历史备份时间间隔：</TextBlock>
+        <TextBlock Grid.Row="18">剪贴板图像格式：</TextBlock>
         <flat:UneditableComboBox x:Name="cbbClipboardImageFormat" Grid.Column="2" Grid.Row="18">
             <ComboBoxItem>png</ComboBoxItem>
             <ComboBoxItem>jpg</ComboBoxItem>
@@ -82,8 +86,8 @@
 
 
         <StackPanel Grid.Column="2" Grid.Row="100" HorizontalAlignment="Right" Orientation="Horizontal">
-            <flat:Button x:Name="btnReInitialize" DisableTimeAfterClicking="1000" Margin="8,0" Click="Button_Click">恢复</flat:Button>
-            <flat:Button x:Name="btnOk" DisableTimeAfterClicking="1000" Margin="8,0" Click="Button_Click">保存</flat:Button>
+            <flat:Button x:Name="btnReInitialize" DisableTimeAfterClicking="1000" Padding="12,2" Margin="8,0" Click="Button_Click">恢复</flat:Button>
+            <flat:Button x:Name="btnOk" DisableTimeAfterClicking="1000" Padding="12,2"  Margin="8,0" Click="Button_Click">保存</flat:Button>
         </StackPanel>
     </Grid>
 </UserControl>

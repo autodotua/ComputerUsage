@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ComputerUsage
 {
@@ -12,7 +13,6 @@ namespace ComputerUsage
         public int TimerInterval { get; set; } = 59;
         public bool IncludeBattery { get; set; } = true;
         public bool IncludeNetwork { get; set; } = true;
-
         public bool IncludeWindows { get; set; } = false;
         public bool IncludeProcesses { get; set; } = false;
         public bool IncludePerformance { get; set; } = true;
@@ -27,5 +27,7 @@ namespace ComputerUsage
         public string ImageFormat { get; set; } ="png";
         public int ClipboradTimeOut { get; set; } = 10000;
         public int ClipboardMinInterval { get; set; } = 500;
+
+        public bool HideColumnsWithoutRecorded { get; set; } = true;
     }
 }

@@ -22,10 +22,52 @@ namespace ComputerUsage
     public partial class App : Application
     {
         WpfCodes.Program.TrayIcon trayIcon;
-        public BackgroundWork background;
         public bool startup = false;
         public App()
         {
+
+
+        }
+
+
+
+
+        //private void ShowException(Exception ex,int type)
+        //{
+        //    try
+        //    {
+        //        Dispatcher.Invoke(() => WpfControls.Dialog.DialogHelper.ShowException("程序发生了未捕获的错误，类型"+type.ToString(), ex));
+
+        //        File.AppendAllText("Exception.log", Environment.NewLine + Environment.NewLine + DateTime.Now.ToString() + Environment.NewLine + ex.ToString());
+        //    }
+        //    catch (Exception ex2)
+        //    {
+        //        Dispatcher.Invoke(() => WpfControls.Dialog.DialogHelper.ShowException("错误信息无法写入", ex2));
+        //    }
+        //    finally
+        //    {
+        //        App.Current.Shutdown();
+        //    }
+        //}
+
+        private void ApplicationStartupEventHandler(object sender, StartupEventArgs e)
+        {
+            ConcernConfigPath();
+            Load();
+            if (e.Args.Length > 0)
+            {
+                if (e.Args[0] == "noWindow")
+                {
+                    startup = true;
+                }
+                else if (e.Args[0] == "readonly")
+                {
+                    ReadOnlyMode = true;
+                }
+            }
+
+            if (!ReadOnlyMode)
+            {
 
 #if !DEBUG
             if (WpfCodes.Program.Startup.HaveAnotherInstance("ComputerUsage"))
@@ -56,41 +98,26 @@ namespace ComputerUsage
               }
           };
 #endif
+                background = new BackgroundWork();
 
-        }
+                Dictionary<string, Action> rightMouseClick = new Dictionary<string, Action>
+               {
+                   { "回收",() => GC.Collect() },
 
+                   {"退出" ,()=>Shutdown() },
+               };
+                trayIcon = new WpfCodes.Program.TrayIcon(ComputerUsage.Properties.Resources.ICON, "计算机使用情况", newWindow, rightMouseClick);
+                trayIcon.Show();
+                ComputerDatas.RegistSystemEvents();
+                ClipboardHelper clipBoardHelper = new ClipboardHelper();
 
-
-
-        //private void ShowException(Exception ex,int type)
-        //{
-        //    try
-        //    {
-        //        Dispatcher.Invoke(() => WpfControls.Dialog.DialogHelper.ShowException("程序发生了未捕获的错误，类型"+type.ToString(), ex));
-
-        //        File.AppendAllText("Exception.log", Environment.NewLine + Environment.NewLine + DateTime.Now.ToString() + Environment.NewLine + ex.ToString());
-        //    }
-        //    catch (Exception ex2)
-        //    {
-        //        Dispatcher.Invoke(() => WpfControls.Dialog.DialogHelper.ShowException("错误信息无法写入", ex2));
-        //    }
-        //    finally
-        //    {
-        //        App.Current.Shutdown();
-        //    }
-        //}
-
-        private void ApplicationStartupEventHandler(object sender, StartupEventArgs e)
-        {
-            ConcernConfigPath();
-            Load();
-            if (e.Args.Length > 0 && e.Args[0] == "noWindow")
-            {
-                startup = true;
             }
-            //ComputerDatas.GetNetworkStatus();
-            background = new BackgroundWork();
-            //await background.TimerTickEventHandler();
+
+
+            if (!startup)
+            {
+                newWindow();
+            }
             void newWindow()
             {
                 if (Current.MainWindow as MainWindow == null)
@@ -99,20 +126,6 @@ namespace ComputerUsage
                     Current.MainWindow.Show();
                 }
             };
-            Dictionary<string, Action> rightMouseClick = new Dictionary<string, Action>
-            {
-                { "回收",() => GC.Collect() },
-
-                {"退出" ,()=>Shutdown() },
-            };
-            trayIcon = new WpfCodes.Program.TrayIcon(ComputerUsage.Properties.Resources.ICON, "计算机使用情况", newWindow, rightMouseClick);
-            trayIcon.Show();
-            if (!startup)
-            {
-                newWindow();
-            }
-            ComputerDatas.RegistSystemEvents();
-            ClipboardHelper clipBoardHelper = new ClipboardHelper();
         }
 
         private void ConcernConfigPath()
