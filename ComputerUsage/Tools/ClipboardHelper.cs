@@ -150,7 +150,7 @@ namespace ComputerUsage
                 currentStep = "刷新";
                 try
                 {
-                    if (App.Current.MainWindow != null)
+                    if (App.Current!=null && App.Current.MainWindow != null)
                     {
                         if ((App.Current.MainWindow as MainWindow).tabClipboard.IsSelected)
                         {

@@ -16,6 +16,7 @@ namespace ComputerUsage
         //public static int TimerInterval { get; set; }
 
         // public static Properties.Settings Set => Properties.Settings.Default;
+        
 
         public static BackgroundWork background;
 

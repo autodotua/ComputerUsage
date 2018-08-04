@@ -22,7 +22,7 @@ namespace ComputerUsage
     /// </summary>
     public partial class PgProcessesDetail : Page
     {
-        ObservableCollection<ProcessInfo> processInfos = new ObservableCollection<ProcessInfo>();
+       public ObservableCollection<ProcessInfo> processInfos = new ObservableCollection<ProcessInfo>();
         public PgProcessesDetail(ProcessInfo[] processes)
         {
             InitializeComponent();
@@ -32,9 +32,23 @@ namespace ComputerUsage
             {
                 processInfos.Add(process);
             }
-
-
+            
         }
+        //public PgProcessesDetail()
+        //{
+        //    InitializeComponent();
+        //    lvw.ItemsSource = ProcessMonitorHelper.MonitoringProcesses ;
+        //    (lvw.View as GridView).Columns.Last().Width = 0;
+
+        //}
+
+        //public void HideSomeColumns()
+        //{
+        //    for(int i=2;i<7;i++)
+        //    {
+        //        (lvw.View as GridView).Columns[i].Width = 8;
+        //    }
+        //}
     }
 
 }

@@ -11,6 +11,7 @@ namespace ComputerUsage
 
         public int ItemsCountOfEachPage { get; set; } = 50;
         public int TimerInterval { get; set; } = 59;
+
         public bool IncludeBattery { get; set; } = true;
         public bool IncludeNetwork { get; set; } = true;
         public bool IncludeWindows { get; set; } = false;
@@ -29,5 +30,9 @@ namespace ComputerUsage
         public int ClipboardMinInterval { get; set; } = 500;
 
         public bool HideColumnsWithoutRecorded { get; set; } = true;
+
+
+        public int ProcessMonitorTimerInterval { get; set; } = 10;
+        public int ProcessMonitorSaveInterval { get; set; } = 30;
     }
 }

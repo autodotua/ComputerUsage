@@ -8,12 +8,13 @@
               xmlns:p="clr-namespace:WpfControls.Progress;assembly=WpfControls"
 
              mc:Ignorable="d" 
+             Background="{DynamicResource background}"
             Loaded="LoadedEventHandler"
              PreviewKeyDown="UserControl_PreviewKeyDown"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <local:DateConverter x:Key="converter"/>
-
+        <SolidColorBrush x:Key="background">White</SolidColorBrush>
 
     </UserControl.Resources>
     <Grid x:Name="grdHistoryTable">
@@ -38,7 +39,7 @@
                 <ComboBoxItem>记录</ComboBoxItem>
                 <ComboBoxItem>事件</ComboBoxItem>
             </flat:UneditableComboBox>
-            <flat:UneditableComboBox HorizontalAlignment="Left" Margin="160,0,0,0" Width="144" IsEnabled="False"  x:Name="cbbMonth" SelectionChanged="cbbMonth_SelectionChanged"/>
+            <flat:UneditableComboBox ToolTipService.ShowOnDisabled="True" ToolTip="若要更改此项，需要进入只读模式" HorizontalAlignment="Left" Margin="160,0,0,0" Width="144" IsEnabled="False"  x:Name="cbbMonth" SelectionChanged="cbbMonth_SelectionChanged"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <flat:Button x:Name="btnRecord" Margin="0,0,4,0"  Click="ButtonsClickEventHandler">立即记录</flat:Button>
@@ -65,7 +66,7 @@
                         <GridViewColumn Header="🖱" DisplayMemberBinding="{Binding DisplayMouseMoved}"/>
 
 
-                        <GridViewColumn Header="时间" Width="82" >
+                        <GridViewColumn Header="时间" Width="92" >
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBox BorderThickness="0" HorizontalContentAlignment="Center"
@@ -77,6 +78,7 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <flat:Button 
+                                        Background="{DynamicResource background}"
                                         HorizontalContentAlignment="Center"
                                         Height="38"
                                     Tag="{Binding Time,Mode=OneTime,Converter={StaticResource converter},ConverterParameter=process}"
@@ -90,6 +92,7 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <flat:Button
+                                        Background="{DynamicResource background}"
                                         HorizontalContentAlignment="Center"
                                         Height="38"
                                     Tag="{Binding Time,Mode=OneTime,Converter={StaticResource converter},ConverterParameter=window}"
@@ -104,10 +107,11 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <flat:Button
+                                        Background="{DynamicResource background}"
                                         HorizontalContentAlignment="Center"
                                         Height="38"
-                                    Tag="{Binding Time,Mode=OneTime,Converter={StaticResource converter},ConverterParameter=foregroundWindow}"
-                                    Click="ButtonsClickEventHandler">
+                                       Tag="{Binding Time,Mode=OneTime,Converter={StaticResource converter},ConverterParameter=foregroundWindow}"
+                                       Click="ButtonsClickEventHandler">
                                         <TextBlock  Text="{Binding DisplayForegroundWindow}"  TextAlignment="Left"/>
                                     </flat:Button>
                                 </DataTemplate>
@@ -117,6 +121,7 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <flat:Button
+                                        Background="{DynamicResource background}"
                                         HorizontalContentAlignment="Center"
                                         Height="38"
                                     Tag="{Binding Time,Mode=OneTime,Converter={StaticResource converter},ConverterParameter=networkStatus}"
@@ -130,10 +135,11 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <flat:Button
+                                        Background="{DynamicResource background}"
                                         HorizontalContentAlignment="Center"
                                         Height="38"
-                                    Tag="{Binding Time,Mode=OneTime,Converter={StaticResource converter},ConverterParameter=performance}"
-                                    Click="ButtonsClickEventHandler">
+                                        Tag="{Binding Time,Mode=OneTime,Converter={StaticResource converter},ConverterParameter=performance}"
+                                        Click="ButtonsClickEventHandler">
                                         <TextBlock Text="{Binding DisplayPerformance}" TextAlignment="Center"/>
                                     </flat:Button>
                                 </DataTemplate>

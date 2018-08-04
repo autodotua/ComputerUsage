@@ -18,7 +18,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="名称"  >
+                    <GridViewColumn Header="名称"  Width="96">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox  BorderThickness="0" IsReadOnly="True" Text="{Binding DisplayName, Mode=OneTime}"/>
@@ -34,7 +34,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn Header="主模块地址"   >
+                    <GridViewColumn Header="主模块地址"   Width="96">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox  BorderThickness="0" IsReadOnly="True" Text="{Binding DisplayMainModuleFileName, Mode=OneTime}"/>

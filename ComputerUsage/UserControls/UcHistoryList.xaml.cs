@@ -34,17 +34,19 @@ namespace ComputerUsage
         int currentPageCount;
         bool needReload = true;
 
-        ObservableCollection<DataInfo> dataHistoryInfos = new ObservableCollection<DataInfo>();
-        ObservableCollection<EventInfo> eventHistoryInfos = new ObservableCollection<EventInfo>();
+      public ObservableCollection<DataInfo> dataHistoryInfos = new ObservableCollection<DataInfo>();
+      public ObservableCollection<EventInfo> eventHistoryInfos = new ObservableCollection<EventInfo>();
 
 
         public UcHistoryList()
         {
             InitializeComponent();
 
+            DataContext = this;
+
             lvwDataHistory.CloseTriggers();
             lvwEventHistory.CloseTriggers();
-
+            
             lvwDataHistory.ItemsSource = dataHistoryInfos;
             lvwEventHistory.ItemsSource = eventHistoryInfos;
             xml.ReloadFields();
@@ -76,6 +78,7 @@ namespace ComputerUsage
             if (ReadOnlyMode)
             {
                 cbbMonth.IsEnabled = true;
+                ToolTipService.SetIsEnabled(cbbMonth, false);
             }
             
         }
@@ -416,6 +419,8 @@ namespace ComputerUsage
             xml = new XmlHelper(file.FullName);
             LoadList();
         }
+
+  
     }
     public class DateConverter : IValueConverter
     {

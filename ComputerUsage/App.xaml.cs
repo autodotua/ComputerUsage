@@ -23,11 +23,6 @@ namespace ComputerUsage
     {
         WpfCodes.Program.TrayIcon trayIcon;
         public bool startup = false;
-        public App()
-        {
-
-
-        }
 
 
 
@@ -108,11 +103,15 @@ namespace ComputerUsage
                };
                 trayIcon = new WpfCodes.Program.TrayIcon(ComputerUsage.Properties.Resources.ICON, "计算机使用情况", newWindow, rightMouseClick);
                 trayIcon.Show();
-                ComputerDatas.RegistSystemEvents();
+                Task.Run(() =>
+                {
+                    ComputerDatas.RegistSystemEvents();
+                });
                 ClipboardHelper clipBoardHelper = new ClipboardHelper();
 
-            }
 
+                ProcessMonitorHelper.Load();
+            }
 
             if (!startup)
             {
@@ -158,7 +157,7 @@ namespace ComputerUsage
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
-            trayIcon.Dispose();
+            trayIcon?.Dispose();
         }
 
 

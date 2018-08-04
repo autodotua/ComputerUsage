@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 
 using static WpfCodes.Basic.Number;
 
 namespace ComputerUsage
 {
-    public class ProcessInfo
+    public class ProcessInfo : INotifyPropertyChanged
     {
         public static List<ProcessInfo> GetProcessInfos(Process[] processes)
         {
@@ -16,26 +18,31 @@ namespace ComputerUsage
             }
             return infos;
         }
-
-        public ProcessInfo(Process process)
+        public ProcessInfo()
+        {
+        }
+            public ProcessInfo(Process process, bool recordAll = true)
         {
             id = process.Id;
-            physicalMemory = process.WorkingSet64;
-            window = process.MainWindowTitle;
-            virtualMemory = process.PagedMemorySize64;
             name = process.ProcessName;
-            responding = process.Responding;
-            try
+            if (recordAll)
             {
-                mainModuleFileName = process.MainModule.FileName;
-            }
-            catch
-            {
+                physicalMemory = process.WorkingSet64;
+                window = process.MainWindowTitle;
+                virtualMemory = process.PagedMemorySize64;
+                responding = process.Responding;
+                try
+                {
+                    mainModuleFileName = process.MainModule.FileName;
+                }
+                catch
+                {
 
+                }
             }
         }
 
-        public ProcessInfo(long physicalMemory, string window, int id, long virtualMemory, string name, bool responding,string mainModuleFileName)
+        public ProcessInfo(long physicalMemory, string window, int id, long virtualMemory, string name, bool responding, string mainModuleFileName)
         {
             this.physicalMemory = physicalMemory;
             this.window = window;
@@ -45,6 +52,9 @@ namespace ComputerUsage
             this.responding = responding;
             this.mainModuleFileName = mainModuleFileName;
         }
+
+        public DateTime Time { get; set; }
+        public string DisplayTime => Time.ToString("MM-dd HH:mm");
 
         public long physicalMemory;
         public string DisplayPhysicalMemory => ByteToFitString(physicalMemory);
@@ -67,6 +77,16 @@ namespace ComputerUsage
 
         public bool responding;
 
-        public string mainModuleFileName="";
+        public string mainModuleFileName = "";
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public bool CanAddToMonitor
+        {
+            get => !ProcessMonitorHelper.MonitoringProcesses.Contains(this);
+            set => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CanAddToMonitor"));
+        }
+
+
     }
 }

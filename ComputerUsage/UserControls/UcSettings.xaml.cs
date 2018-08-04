@@ -24,14 +24,14 @@ namespace ComputerUsage
         public UcSettings()
         {
             InitializeComponent();
-            sldInterval.TextConvert = p => p.ToString() + "秒";
-            sldItemsCountOfEachPage.TextConvert = p => ((int)p).ToString() + "条";
-            sldNetTimeOut.TextConvert = p => ((int)p).ToString() + "毫秒";
-            sldBackupCount.TextConvert = p => ((int)p).ToString() + "个";
-
-            sldBackupInterval.TextConvert = p => ((int)p).ToString() + "分";
-
-            sldClipboardMinInterval.TextConvert = p => (int)p + "毫秒";
+           // sldInterval.TextConvert = p => p.ToString() + "秒";
+         //  sldItemsCountOfEachPage.TextConvert = p => ((int)p).ToString() + "条";
+         //  sldNetTimeOut.TextConvert = p => ((int)p).ToString() + "毫秒";
+         //  sldBackupCount.TextConvert = p => ((int)p).ToString() + "个";
+         //
+         //  sldBackupInterval.TextConvert = p => ((int)p).ToString() + "分";
+         //
+         //  sldClipboardMinInterval.TextConvert = p => (int)p + "毫秒";
 
             if (WpfCodes.Program.Startup.WillRunWhenStartup("ComputerUsage"))
             {

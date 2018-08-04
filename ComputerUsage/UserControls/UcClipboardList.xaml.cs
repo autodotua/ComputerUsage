@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -34,27 +35,37 @@ namespace ComputerUsage
 
         }
 
-        public void Load()
+        public async void Load()
         {
+            List<ClipboardInfo> infos = new List<ClipboardInfo>();
+
             clipboardHistoryInfos.Clear();
             clipboardDetailInfos.Clear();
-            if (!Directory.Exists(ClipboardHelper.ClipboardHistoryPath))
+            await Task.Run(() =>
             {
-                Directory.CreateDirectory(ClipboardHelper.ClipboardHistoryPath);
-                return;
-            }
-            foreach (var directory in Directory.EnumerateDirectories(ClipboardHelper.ClipboardHistoryPath))
+                if (!Directory.Exists(ClipboardHelper.ClipboardHistoryPath))
+                {
+                    Directory.CreateDirectory(ClipboardHelper.ClipboardHistoryPath);
+                    return;
+                }
+                foreach (var directory in Directory.EnumerateDirectories(ClipboardHelper.ClipboardHistoryPath))
+                {
+                    ClipboardInfo info = null;
+                    try
+                    {
+                        info = new ClipboardInfo(directory);
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                    infos.Add(info);
+                }
+            });
+            foreach (var info in infos)
             {
-                ClipboardInfo info = null;
-                try
-                {
-                    info = new ClipboardInfo(directory);
-                }
-                catch
-                {
-                    continue;
-                }
                 clipboardHistoryInfos.Add(info);
+
             }
         }
 

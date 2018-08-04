@@ -574,7 +574,7 @@ namespace ComputerUsage
 
         #endregion
 
-        public DateTime LastTimeOfDatas => DateTime.Parse((root.LastChild as XmlElement).GetAttribute("Time"));
+        public DateTime LastXmlTime => DateTime.Parse((root.LastChild as XmlElement).GetAttribute("Time"));
 
         public void Clip()
         {

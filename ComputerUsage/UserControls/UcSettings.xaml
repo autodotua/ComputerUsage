@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:flat="clr-namespace:WpfControls.FlatStyle;assembly=WpfControls"
-
+        xmlns:win10="clr-namespace:WpfControls.Win10Style;assembly=WpfControls"
                xmlns:local="clr-namespace:ComputerUsage"
              Background="White"
              mc:Ignorable="d"  >
@@ -41,7 +41,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock>信息获取时间间隔：</TextBlock>
-        <flat:HorizontalSlider x:Name="sldInterval" Minimum="5" Maximum="59" Grid.Column="2"/>
+        <win10:ModernSlider IsSnapToTickEnabled="True" TickFrequency="1" AutoToolTipPlacement="BottomRight" x:Name="sldInterval" Minimum="5" Maximum="59" Grid.Column="2" />
         <StackPanel Grid.Row="2"  VerticalAlignment="Center">
             <TextBlock Grid.Row="2" VerticalAlignment="Center">需要记录的内容：</TextBlock>
             <flat:CheckBox x:Name="chkHideColumsWithoutRecorded" Margin="0,4">隐藏不记录项目的列</flat:CheckBox>
@@ -56,7 +56,7 @@
             <flat:CheckBox x:Name="chkPerformance" Margin="0,2">性能</flat:CheckBox>
         </StackPanel>
         <TextBlock Grid.Row="4">历史纪录表格每页最多显示的项目数量：</TextBlock>
-        <flat:HorizontalSlider x:Name="sldItemsCountOfEachPage" Minimum="5" Maximum="1000" TextWidth="48" Grid.Column="2" Grid.Row="4"/>
+        <win10:ModernSlider IsSnapToTickEnabled="True" TickFrequency="50" AutoToolTipPlacement="BottomRight"  x:Name="sldItemsCountOfEachPage" Minimum="50" Maximum="1000" Grid.Column="2" Grid.Row="4"/>
 
         <TextBlock Grid.Row="6" VerticalAlignment="Center">开机自启：</TextBlock>
         <flat:UneditableComboBox x:Name="cbbStartUp" Grid.Row="6" Grid.Column="2">
@@ -69,14 +69,14 @@
         <TextBlock Grid.Row="8">网络连接检测网址：</TextBlock>
         <flat:TextBox Grid.Row="8" Grid.Column="2" x:Name="txtNetAddresses" AcceptsReturn="True" MaxHeight="96"/>
         <TextBlock Grid.Row="10">网络连接超时：</TextBlock>
-        <flat:HorizontalSlider x:Name="sldNetTimeOut" Minimum="1" Maximum="10000" TextWidth="72" Grid.Column="2" Grid.Row="10"/>
+        <win10:ModernSlider IsSnapToTickEnabled="True" TickFrequency="1" AutoToolTipPlacement="BottomRight"  x:Name="sldNetTimeOut" Minimum="1" Maximum="10000" Grid.Column="2" Grid.Row="10"/>
         <TextBlock Grid.Row="12">历史备份最大数量：</TextBlock>
-        <flat:HorizontalSlider x:Name="sldBackupCount" Minimum="2" Maximum="100" TextWidth="72" Grid.Column="2" Grid.Row="12"/>
+        <win10:ModernSlider IsSnapToTickEnabled="True" TickFrequency="5" AutoToolTipPlacement="BottomRight"  x:Name="sldBackupCount" Minimum="5" Maximum="100"  Grid.Column="2" Grid.Row="12"/>
         <TextBlock Grid.Row="14">历史备份时间间隔：</TextBlock>
-        <flat:HorizontalSlider x:Name="sldBackupInterval" Minimum="5" Maximum="120" TextWidth="72" Grid.Column="2" Grid.Row="14"/>
+        <win10:ModernSlider IsSnapToTickEnabled="True" TickFrequency="5" AutoToolTipPlacement="BottomRight"  x:Name="sldBackupInterval" Minimum="5" Maximum="120" Grid.Column="2" Grid.Row="14"/>
 
         <TextBlock Grid.Row="16">剪贴板最小时间间隔：</TextBlock>
-        <flat:HorizontalSlider x:Name="sldClipboardMinInterval" Minimum="0" Maximum="1000" TextWidth="72" Grid.Column="2" Grid.Row="16"/>
+        <win10:ModernSlider IsSnapToTickEnabled="True" TickFrequency="20" AutoToolTipPlacement="BottomRight"  x:Name="sldClipboardMinInterval" Minimum="0" Maximum="1000"  Grid.Column="2" Grid.Row="16"/>
         <TextBlock Grid.Row="18">剪贴板图像格式：</TextBlock>
         <flat:UneditableComboBox x:Name="cbbClipboardImageFormat" Grid.Column="2" Grid.Row="18">
             <ComboBoxItem>png</ComboBoxItem>

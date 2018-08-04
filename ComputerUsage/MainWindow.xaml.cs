@@ -27,16 +27,26 @@ namespace ComputerUsage
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : WpfControls.Win10Style.ModernWindow
     {
-        
+
         public MainWindow()
         {
             WpfControls.Dialog.DialogHelper.DefautDialogOwner = this;
 
             InitializeComponent();
             UpdateColor(new SolidColorBrush(Colors.White));
-            
+            if (ReadOnlyMode)
+            {
+                btnReadOnly.Visibility = Visibility.Hidden;
+                Title = "计算机使用情况统计 - 只读模式";
+            }
+            Icon = 
+            Imaging.CreateBitmapSourceFromHBitmap(
+            Properties.Resources.ICON.ToBitmap().GetHbitmap(),
+            IntPtr.Zero,
+            Int32Rect.Empty,
+            BitmapSizeOptions.FromEmptyOptions());
         }
         private void UpdateColor(SolidColorBrush value)
         {
@@ -63,17 +73,22 @@ namespace ComputerUsage
 
         }
 
-        private void TabItem_Selected(object sender, RoutedEventArgs e)
+        private async void TabItem_Selected(object sender, RoutedEventArgs e)
         {
-            var tab = sender as TabItem;
-            if (tab == tabSettings)
+            if (sender == tabSettings)
             {
                 ucSettings.Initialize();
             }
-            else if(tab==tabClipboard)
+            else if (sender == tabClipboard)
             {
                 ucClipboard.Load();
             }
+            //else if (sender == tabProcessMonitor)
+            //{
+            //    IsBusy = true;
+            //    await ucProcessMonitor.LoadProcesses();
+            //    IsBusy = false;x
+            //}
         }
 
         private void ChartBtnClickEventHandler(object sender, RoutedEventArgs e)
@@ -104,7 +119,7 @@ namespace ComputerUsage
         {
             set
             {
-                if(value)
+                if (value)
                 {
                     loading.Show();
                 }
@@ -115,6 +130,29 @@ namespace ComputerUsage
             }
         }
 
+        private void btnReadOnly_Click(object sender, RoutedEventArgs e)
+        {
+            string path = Process.GetCurrentProcess().MainModule.FileName;
+            Process.Start(path, "readonly");
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            if (ReadOnlyMode)
+            {
+                App.Current.Shutdown();
+            }
+        }
+
+        private void tab_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+           
+        }
+
+        private void btnShutdown_Click(object sender, RoutedEventArgs e)
+        {
+            App.Current.Shutdown();
+        }
     }
 
 

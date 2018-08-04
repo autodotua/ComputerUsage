@@ -11,7 +11,7 @@ namespace ComputerUsage
 {
    public class BackgroundWork
     {
-        Timer mainTimer;
+        private Timer mainTimer;
 
         public BackgroundWork()
         {
@@ -41,7 +41,7 @@ namespace ComputerUsage
                 lastBackupTime = DateTime.Now;
                 Backup();
             }
-            if(xml.LastTimeOfDatas.Day!=DateTime.Today.Day)
+            if(xml.LastXmlTime.Day!=DateTime.Today.Day)
             {
                 xml = new XmlHelper();
             }
