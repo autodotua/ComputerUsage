@@ -123,26 +123,29 @@ namespace ComputerUsage
         public static Dictionary<ProcessInfo, FileInfo> GetHistory()
         {
             Dictionary<ProcessInfo, FileInfo> histories = new Dictionary<ProcessInfo, FileInfo>();
-            foreach (var file in Directory.EnumerateFiles(ConfigDirectory + "\\ProcessMonitor").Select(p => new FileInfo(p)))
+            if (Directory.Exists(ConfigDirectory + "\\ProcessMonitor"))
             {
-                try
+                foreach (var file in Directory.EnumerateFiles(ConfigDirectory + "\\ProcessMonitor").Select(p => new FileInfo(p)))
                 {
-
-                    string name = file.Name.RemoveEnd(file.Extension);
-                    string[] str = name.Split('_');
-                    if (str.Length < 3)
+                    try
                     {
-                        continue;
-                    }
-                    DateTime time = DateTime.ParseExact(str[0], "yyyyMMdd-HHmmss", CultureInfo.CurrentCulture);
-                    int id = int.Parse(str[1]);
-                    string processName = name.RemoveStart(str[0] + "_" + str[1]+"_");
-                    ProcessInfo info = new ProcessInfo() { Time = time, id = id, name = processName };
-                    histories.Add(info, file);
-                }
-                catch
-                {
 
+                        string name = file.Name.RemoveEnd(file.Extension);
+                        string[] str = name.Split('_');
+                        if (str.Length < 3)
+                        {
+                            continue;
+                        }
+                        DateTime time = DateTime.ParseExact(str[0], "yyyyMMdd-HHmmss", CultureInfo.CurrentCulture);
+                        int id = int.Parse(str[1]);
+                        string processName = name.RemoveStart(str[0] + "_" + str[1] + "_");
+                        ProcessInfo info = new ProcessInfo() { Time = time, id = id, name = processName };
+                        histories.Add(info, file);
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
             return histories;

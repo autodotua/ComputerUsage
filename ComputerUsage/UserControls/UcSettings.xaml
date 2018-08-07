@@ -47,13 +47,20 @@
             <flat:CheckBox x:Name="chkHideColumsWithoutRecorded" Margin="0,4">隐藏不记录项目的列</flat:CheckBox>
             <TextBlock Foreground="LightGray">改变设置需要重启应用</TextBlock>
         </StackPanel>
-        <StackPanel Grid.Row="2" Grid.Column="2">
-            <flat:CheckBox x:Name="chkProcesses" Margin="0,2">正在运行的进程</flat:CheckBox>
-            <flat:CheckBox x:Name="chkWindows" Margin="0,2">窗口</flat:CheckBox>
-            <flat:CheckBox x:Name="chkBattery" Margin="0,2">电池信息</flat:CheckBox>
+        <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal">
+            <StackPanel Orientation="Vertical">
+                <flat:CheckBox x:Name="chkProcesses" Margin="0,2">正在运行的进程</flat:CheckBox>
+                <flat:CheckBox x:Name="chkWindows" Margin="0,2">窗口</flat:CheckBox>
+                <flat:CheckBox x:Name="chkBattery" Margin="0,2">电池信息</flat:CheckBox>
+
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Margin="8,0,0,0">
             <flat:CheckBox x:Name="chkNetwork" Margin="0,2">网络连接情况</flat:CheckBox>
             <flat:CheckBox x:Name="chkClipboard" Margin="0,2">剪贴板</flat:CheckBox>
             <flat:CheckBox x:Name="chkPerformance" Margin="0,2">性能</flat:CheckBox>
+
+            </StackPanel>
+
         </StackPanel>
         <TextBlock Grid.Row="4">历史纪录表格每页最多显示的项目数量：</TextBlock>
         <win10:ModernSlider IsSnapToTickEnabled="True" TickFrequency="50" AutoToolTipPlacement="BottomRight"  x:Name="sldItemsCountOfEachPage" Minimum="50" Maximum="1000" Grid.Column="2" Grid.Row="4"/>

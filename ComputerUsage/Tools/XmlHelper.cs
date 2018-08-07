@@ -442,6 +442,19 @@ namespace ComputerUsage
         int saveFailedTimes = 0;
         private void Save()
         {
+            DirectoryInfo directory = new FileInfo(Path).Directory;
+            if (!directory.Exists)
+            {
+                try
+                {
+                    directory.Create();
+                }
+                catch(Exception ex)
+                {
+                    WpfControls.Dialog.DialogHelper.ShowException("备份文件夹不存在且无法创建！", ex);
+                    return;
+                }
+            }
             try
             {
                 xmlDocument.Save(Path);
